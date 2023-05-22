@@ -3,7 +3,10 @@ import type { NextApiRequest, NextApiResponse } from "next/types";
 import { createUploadthing, type FileRouter } from "uploadthing/next-legacy";
 const f = createUploadthing();
 
-const auth = (req: NextApiRequest, res: NextApiResponse) => ({ id: "fakeId" }); // Fake auth function
+const auth = (req: NextApiRequest, res: NextApiResponse) => {
+  console.log(req, res);
+  return { id: "fakeId" };
+}; // Fake auth function
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -12,7 +15,7 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .fileTypes(["image", "video"])
     .maxSize("1GB")
-    .middleware(async (req, res) => {
+    .middleware((req, res) => {
       // This code runs on your server before upload
       const user = auth(req, res);
 

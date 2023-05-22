@@ -5,7 +5,7 @@ import {
   type DefaultSession,
 } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "~/env.mjs";
+// import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 
 /**
@@ -46,7 +46,6 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-
     /**
      * ...add more providers here.
      *
