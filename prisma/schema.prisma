@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
+    provider = "prisma-client-js"
+    // previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
@@ -15,7 +15,7 @@ datasource db {
 
 model Post {
     id        String   @id @default(cuid())
-    text      String   @db.Text
+    text      String //@db.Text
     image     String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -79,12 +79,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
+    refresh_token     String? //@db.Text
+    access_token      String? //@db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? @db.Text
+    id_token          String? //@db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
