@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "pnpm run db:dev && next dev",
     "postinstall": "prisma generate",
+    "db:dev": "prisma generate && prisma db push --accept-data-loss ",
     "lint": "next lint",
     "start": "next start"
   },

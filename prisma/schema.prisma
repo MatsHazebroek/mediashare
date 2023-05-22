@@ -17,10 +17,63 @@ datasource db {
     shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model Example {
+model Post {
     id        String   @id @default(cuid())
+    text      String   @db.Text
+    image     String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    Like      Like[]
+    User      User     @relation(fields: [userId], references: [id])
+    userId    String
+
+    Comment Comment[] @relation("main")
+    Reply   Comment[] @relation("reply")
+
+    @@index([userId])
+}
+
+model Like {
+    id String @id @default(cuid())
+
+    post   Post   @relation(fields: [postId], references: [id])
+    postId String
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    date DateTime @default(now())
+
+    @@index([postId])
+    @@index([userId])
+}
+
+model Comment {
+    id String @id @default(cuid())
+
+    main   Post   @relation("main", fields: [mainId], references: [id])
+    mainId String
+
+    reply   Post   @relation("reply", fields: [replyId], references: [id])
+    replyId String
+
+    @@index([mainId])
+    @@index([replyId])
+}
+
+model following {
+    id String @id @default(cuid())
+
+    user   User   @relation("Follower", fields: [userId], references: [id], onDelete: Cascade)
+    userId String
+
+    following   User   @relation("Follwing", fields: [followingId], references: [id], onDelete: Cascade)
+    followingId String
+
+    date DateTime @default(now())
+
+    @@index([userId])
+    @@index([followingId])
 }
 
 // Necessary for Next auth
@@ -30,16 +83,17 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? // @db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -48,16 +102,25 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String      @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?     @unique
     emailVerified DateTime?
     image         String?
+    posts         Post[]
     accounts      Account[]
     sessions      Session[]
+    Like          Like[]
+    following     following[] @relation("Follower")
+    followers     following[] @relation("Follwing")
+    description   String?
+    createdAt     DateTime    @default(now())
+    banned        Boolean     @default(false)
 }
 
 model VerificationToken {
