@@ -4,6 +4,6 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx, input }) => {
-    return ctx.prisma.example.findMany();
+    return "POEP ETEN :)";
   }),
 });
