@@ -144,7 +144,7 @@ const Index = () => {
             className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800"
           >
             <span className="text-sm text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-500">
-              Login
+              Login +
             </span>
           </button>
         </div>
