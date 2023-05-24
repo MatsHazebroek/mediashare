@@ -1,9 +1,9 @@
 /** pages/api/uploadthing.ts */
-import { createNextPageApiHandler } from "uploadthing/next-legacy";
-import { ourFileRouter } from "~/server/uploadthing";
+// import { createNextPageApiHandler } from "uploadthing/next-legacy";
+// import { ourFileRouter } from "~/server/uploadthing";
 
-const handler = createNextPageApiHandler({
-  router: ourFileRouter,
-});
+// const handler = createNextPageApiHandler({
+//   router: ourFileRouter,
+// });
 
-export default handler;
+// export default handler;
