@@ -1,12 +1,11 @@
-import { UploadButton } from "@uploadthing/react";
-import type { OurFileRouter } from "~/server/uploadthing";
+// import { UploadButton } from "@uploadthing/react";
+// import type { OurFileRouter } from "~/server/uploadthing";
 
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 
 const Home: NextPage = () => {
-  const userSubmit = (e: React.FormEvent<HTMLFormElement>) => {};
   return (
     <>
       <Head>
@@ -15,13 +14,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <form onSubmit={userSubmit}>
+        <form>
           <textarea
             className="bg-gray-100 text-black"
             placeholder="What's on your mind?"
           ></textarea>
         </form>
-        <UploadButton<OurFileRouter>
+        {/* <UploadButton<OurFileRouter>
           endpoint="imageUploader"
           onClientUploadComplete={(res) => {
             // Do something with the response
@@ -32,7 +31,7 @@ const Home: NextPage = () => {
             // Do something with the error.
             alert(`ERROR! ${error.message} ${JSON.stringify(error)}`);
           }}
-        />
+        /> */}
       </main>
     </>
   );
