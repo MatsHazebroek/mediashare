@@ -7,8 +7,8 @@
     "build": "nx build mediashare --verbose"
   },
   "private": true,
-  "dependencies": {},
   "devDependencies": {
+    "@nx/next": "^16.2.2",
     "nx": "16.2.2",
     "nx-cloud": "latest"
   }
