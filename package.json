@@ -5,7 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "pnpm run db:dev && npm-run-all --parallel db:studio next:dev",
-    "next:dev": "next dev",
+    "next:dev": "open http://localhost:3000 && next dev",
     "postinstall": "prisma generate",
     "db:dev": "prisma generate && prisma db push --accept-data-loss ",
     "db:studio": "prisma studio",

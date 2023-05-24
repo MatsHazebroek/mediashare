@@ -1,35 +1,42 @@
 /** server/uploadthing.ts */
 import type { NextApiRequest, NextApiResponse } from "next/types";
 import { createUploadthing, type FileRouter } from "uploadthing/next-legacy";
+import { getServerAuthSession } from "./auth";
+import { prisma } from "./db";
 const f = createUploadthing();
-
-const auth = (req: NextApiRequest, res: NextApiResponse) => {
-  console.log(req, res);
-  return { id: "fakeId" };
-}; // Fake auth function
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
   imageUploader: f
     // Set permissions and file types for this FileRoute
-    .fileTypes(["image", "video"])
-    .maxSize("1GB")
-    .middleware((req, res) => {
-      // This code runs on your server before upload
-      const user = auth(req, res);
-
+    .fileTypes(["image"])
+    .maxSize("128MB")
+    .middleware(async (req, res) => {
       // If you throw, the user will not be able to upload
-      if (!user) throw new Error("Unauthorized");
-
+      const session = await getServerAuthSession({ req, res });
+      if (!session || !session.user) throw new Error("Not logged in");
+      if (typeof req.query.id !== "string") throw new Error("Invalid id");
+      await prisma.post
+        .findUniqueOrThrow({
+          where: { id: req.query.id },
+        })
+        .then((post) => {
+          if (post.userId !== session.user.id) throw new Error("Not your post");
+        })
+        .catch(() => {
+          throw new Error("Something went wrong");
+        });
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id };
+      return { postId: req.query.id, prisma: prisma, session: session };
     })
-    .onUploadComplete(({ metadata, file }) => {
-      // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.url);
+    .onUploadComplete(async ({ metadata, file }) => {
+      await metadata.prisma.post.update({
+        where: { id: metadata.postId },
+        data: {
+          image: file.url,
+        },
+      });
     }),
 } satisfies FileRouter;
 
