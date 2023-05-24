@@ -11,5 +11,8 @@
     "@nx/next": "^16.2.2",
     "nx": "16.2.2",
     "nx-cloud": "latest"
+  },
+  "dependencies": {
+    "next": "^13.4.1"
   }
 }
