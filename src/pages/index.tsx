@@ -2,7 +2,15 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Sidebar from "../components/sidebar";
 
-const Home: NextPage = () => {
+function Home() {
+  return (
+    <>
+      <PageContent />
+    </>
+  );
+}
+
+const PageContent: NextPage = () => {
   return (
     <>
       <Head>
@@ -11,7 +19,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Sidebar />
+        <Sidebar>
+          <p>KAAS</p>
+        </Sidebar>
       </main>
     </>
   );
