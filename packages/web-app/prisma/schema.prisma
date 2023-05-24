@@ -15,8 +15,8 @@ datasource db {
 
 model Post {
     id        String   @id @default(cuid())
-    text      String //@db.Text
-    image     String
+    text      String   @db.Text
+    image     String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     Like      Like[]
@@ -30,15 +30,12 @@ model Post {
 }
 
 model Like {
-    id String @id @default(cuid())
-
-    post   Post   @relation(fields: [postId], references: [id])
+    id     String   @id @default(cuid())
+    post   Post     @relation(fields: [postId], references: [id])
     postId String
-
-    user   User   @relation(fields: [userId], references: [id])
+    user   User     @relation(fields: [userId], references: [id])
     userId String
-
-    date DateTime @default(now())
+    date   DateTime @default(now())
 
     @@index([postId])
     @@index([userId])
