@@ -1,14 +1,11 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Auth from "../components/auth";
 import Sidebar from "../components/sidebar";
 
 function Home() {
   return (
     <>
-      <Auth>
-        <PageContent />
-      </Auth>
+      <PageContent />
     </>
   );
 }
@@ -22,7 +19,9 @@ const PageContent: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Sidebar />
+        <Sidebar>
+          <p>KAAS</p>
+        </Sidebar>
       </main>
     </>
   );
