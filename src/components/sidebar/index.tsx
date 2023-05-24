@@ -1,9 +1,9 @@
+import { signIn } from "next-auth/react";
 import React from "react";
 
 const Index = () => {
   return (
     <>
-      {/* <!-- component --> */}
       <link
         rel="stylesheet"
         href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css"
@@ -105,7 +105,21 @@ const Index = () => {
                   <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
                     <i className="bx bx-log-in"></i>
                   </span>
-                  <span className="text-lg font-medium">Inloggen</span>
+                  <span
+                    className="text-lg font-medium"
+                    onClick={() => {
+                      void (async () => {
+                        await signIn("google", {
+                          redirect: true,
+                          callbackUrl: "/",
+                        }).catch(() => {
+                          return;
+                        });
+                      })();
+                    }}
+                  >
+                    Inloggen
+                  </span>
                 </a>
               </li>
             </ul>

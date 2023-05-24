@@ -1,8 +1,19 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import Auth from "../components/auth";
 import Sidebar from "../components/sidebar";
 
-const Home: NextPage = () => {
+function Home() {
+  return (
+    <>
+      <Auth>
+        <PageContent />
+      </Auth>
+    </>
+  );
+}
+
+const PageContent: NextPage = () => {
   return (
     <>
       <Head>
