@@ -1,11 +1,15 @@
-// import { UploadButton } from "@uploadthing/react";
-// import type { OurFileRouter } from "~/server/uploadthing";
+import { UploadButton } from "@uploadthing/react";
+import type { OurFileRouter } from "~/server/uploadthing";
 
+import { useRef } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
 
 const Home: NextPage = () => {
+  const startUploadRef = useRef<(() => void) | null>(null);
+  const handleStartUpload = (startUpload: () => void) => {
+    startUploadRef.current = startUpload;
+  };
   return (
     <>
       <Head>
@@ -20,8 +24,17 @@ const Home: NextPage = () => {
             placeholder="What's on your mind?"
           ></textarea>
         </form>
-        {/* <UploadButton<OurFileRouter>
-          endpoint="imageUploader"
+        <button
+          onClick={() => {
+            console.log("startUploadCall", startUploadRef);
+            if (startUploadRef.current) startUploadRef.current();
+          }}
+        >
+          This should now upload :{")"}{" "}
+        </button>
+        <UploadButton<OurFileRouter>
+          endpoint="postUploader"
+          startUpload={handleStartUpload}
           onClientUploadComplete={(res) => {
             // Do something with the response
             console.log("Files: ", res);
@@ -31,7 +44,7 @@ const Home: NextPage = () => {
             // Do something with the error.
             alert(`ERROR! ${error.message} ${JSON.stringify(error)}`);
           }}
-        /> */}
+        />
       </main>
     </>
   );

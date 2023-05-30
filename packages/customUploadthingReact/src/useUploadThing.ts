@@ -1,14 +1,14 @@
 import { useState } from "react";
-import type { FileRouter } from "uploadthing/server";
+
 import { DANGEROUS__uploadFiles } from "uploadthing/client";
+import type { ExpandedRouteConfig, FileRouter } from "uploadthing/server";
 
 import { useEvent } from "./utils/useEvent";
 import useFetch from "./utils/useFetch";
 
 type EndpointMetadata = {
   slug: string;
-  maxSize: string;
-  fileTypes: string[];
+  config: ExpandedRouteConfig;
 }[];
 const useEndpointMetadata = (endpoint: string) => {
   const { data } = useFetch<EndpointMetadata>("/api/uploadthing");
@@ -25,7 +25,7 @@ export const useUploadThing = <T extends string>({
 }: {
   endpoint: T;
   onClientUploadComplete?: (
-    res?: Awaited<ReturnType<typeof DANGEROUS__uploadFiles>>
+    res?: Awaited<ReturnType<typeof DANGEROUS__uploadFiles>>,
   ) => void;
   onUploadError?: (e: Error) => void;
 }) => {
