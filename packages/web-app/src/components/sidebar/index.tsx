@@ -3,6 +3,8 @@ import Image from "next/image";
 import React from "react";
 import Auth from "../auth";
 import Modal from "../modal";
+import DropDownMenu from "../dropdownmenu";
+
 type props = {
   children: React.ReactNode;
 };
@@ -145,17 +147,14 @@ const Index = (props: props) => {
                       ) : null}
                       <div className="ml-2 font-bold ">
                         {session?.user.name}
+                        <div className="text-xs">{session?.user.email}</div>
                       </div>
 
                       <a
                         href="#"
-                        className="mx-auto mb-12 flex h-12 w-44 transform flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
+                        className="mx-auto mb-12 flex transform flex-row items-center justify-center rounded px-1 py-1 text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                       >
-                        {/* <span className="ml-4 inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
-                          <i className="bx bx-log-out"></i>
-                        </span> */}
-
-                        <span
+                        {/* <span
                           className="text-lg font-medium"
                           onClick={() => {
                             void (async () => {
@@ -165,8 +164,9 @@ const Index = (props: props) => {
                             })();
                           }}
                         >
-                          ***
-                        </span>
+                        </span> */}
+
+                        <DropDownMenu></DropDownMenu>
                       </a>
                     </div>
                   )}

@@ -10,7 +10,7 @@ const Index = () => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className=" h-12 w-52 flex-row items-center rounded bg-[#1D9BF9] text-white transition-colors duration-200 hover:bg-[#47aefc]">
+        <button className="h-12 w-52 flex-row items-center rounded bg-[#1D9BF9] text-white transition-colors duration-200 hover:bg-[#47aefc]">
           Tweet
         </button>
       </Dialog.Trigger>
