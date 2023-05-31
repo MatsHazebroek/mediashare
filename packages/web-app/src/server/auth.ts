@@ -3,10 +3,12 @@ import {
   getServerSession,
   type NextAuthOptions,
   type DefaultSession,
+  DefaultUser,
 } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
+import type { Account_Status, User as dbUserType } from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 
 /**
@@ -20,14 +22,13 @@ declare module "next-auth" {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      status: Account_Status;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User extends dbUserType {
+    id: dbUserType["id"];
+  }
 }
 
 /**
@@ -42,6 +43,7 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: user.id,
+        status: user.status,
       },
     }),
   },
@@ -49,8 +51,8 @@ export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET
-    })
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
     /**
      * ...add more providers here.
      *

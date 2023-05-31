@@ -4,6 +4,7 @@ import React from "react";
 import Auth from "../auth";
 import Modal from "../form/tweetButtonModal";
 import DropDownMenu from "../dropdownmenu";
+import Link from "next/link";
 
 type props = {
   children: React.ReactNode;
@@ -24,8 +25,8 @@ const Index = (props: props) => {
             </div>
             <ul className="flex flex-col py-4">
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/"
                   className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                 >
                   <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
@@ -40,7 +41,7 @@ const Index = (props: props) => {
                     </svg>
                   </span>
                   <span className="text-lg font-medium">Home</span>
-                </a>
+                </Link>
               </li>
               {/* <li>
               <a
@@ -55,8 +56,8 @@ const Index = (props: props) => {
             </li> */}
               <Auth>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    href={"/profile/@" + (session?.user.name || "")}
                     className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                   >
                     <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
@@ -75,7 +76,7 @@ const Index = (props: props) => {
                       </svg>
                     </span>
                     <span className="text-lg font-medium">Profiel</span>
-                  </a>
+                  </Link>
                 </li>
               </Auth>
               {/* <li>
@@ -108,7 +109,7 @@ const Index = (props: props) => {
                 <li>
                   {status === "unauthenticated" ? (
                     <>
-                      <a
+                      <Link
                         href="#"
                         className="mx-auto mb-12 flex h-12 w-52 transform flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                       >
@@ -130,7 +131,7 @@ const Index = (props: props) => {
                         >
                           Inloggen
                         </span>
-                      </a>
+                      </Link>
                     </>
                   ) : (
                     <div className="ml-5 flex flex-row justify-center">
@@ -150,7 +151,7 @@ const Index = (props: props) => {
                         <div className="text-xs">{session?.user.email}</div>
                       </div>
 
-                      <a
+                      <Link
                         href="#"
                         className="mx-auto mb-12 flex transform flex-row items-center justify-center rounded px-1 py-1 text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                       >
@@ -167,7 +168,7 @@ const Index = (props: props) => {
                         </span> */}
 
                         <DropDownMenu></DropDownMenu>
-                      </a>
+                      </Link>
                     </div>
                   )}
                 </li>

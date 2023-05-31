@@ -22,6 +22,7 @@ export const postRouter = createTRPCRouter({
         return await ctx.prisma.post.findMany({
           orderBy: { createdAt: "desc" },
           select: {
+            _count: { select: { Like: true } },
             id: true,
             text: true,
             image: true,
@@ -45,7 +46,7 @@ export const postRouter = createTRPCRouter({
           where: {
             userId: input.user,
             User: {
-              banned: false,
+              status: "ACTIVE",
             },
           },
           take: 50,
@@ -58,6 +59,7 @@ export const postRouter = createTRPCRouter({
         return await ctx.prisma.post.findMany({
           orderBy: { createdAt: "desc" },
           select: {
+            _count: { select: { Like: true } },
             id: true,
             text: true,
             image: true,
@@ -85,7 +87,7 @@ export const postRouter = createTRPCRouter({
                   id: ctx.session.user.id,
                 },
               },
-              banned: false,
+              status: "ACTIVE",
             },
           },
           take: 50,
@@ -97,6 +99,7 @@ export const postRouter = createTRPCRouter({
       return await ctx.prisma.post.findMany({
         orderBy: { createdAt: "desc" },
         select: {
+          _count: { select: { Like: true } },
           id: true,
           text: true,
           image: true,
@@ -119,7 +122,7 @@ export const postRouter = createTRPCRouter({
         },
         where: {
           User: {
-            banned: false,
+            status: "ACTIVE",
           },
         },
         take: 50,
@@ -139,6 +142,7 @@ export const postRouter = createTRPCRouter({
             id: input.id,
           },
           select: {
+            _count: { select: { Like: true } },
             id: true,
             text: true,
             image: true,
@@ -146,24 +150,22 @@ export const postRouter = createTRPCRouter({
             updatedAt: true,
             User: {
               select: {
+                _count: { select: { followers: true, following: true } },
                 name: true,
-                banned: true,
-              },
-            },
-            Like: {
-              select: {
                 id: true,
+                status: true,
+                image: true,
               },
             },
           },
         })
         .then((post) => {
-          if (post.User.banned)
+          if (post.User.status === "BANNED")
             throw new TRPCError({
               code: "NOT_FOUND",
               message: "Post not found",
             });
-          return { ...post, Like: post.Like.length };
+          return { ...post, User: { ...post.User, status: undefined } };
         });
     }),
   create: protectedProcedure

@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import { NotCompletedRegistration } from "~/components/auth/notCompletedRegistration";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -13,8 +14,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
       <Toaster />
+      <NotCompletedRegistration>
+        <Component {...pageProps} />
+      </NotCompletedRegistration>
     </SessionProvider>
   );
 };

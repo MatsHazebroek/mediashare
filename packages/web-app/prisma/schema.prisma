@@ -100,20 +100,27 @@ model Session {
 }
 
 model User {
-    id            String      @id @default(cuid())
+    id            String         @id @default(cuid())
     name          String?
-    email         String?     @unique
+    email         String?        @unique
     emailVerified DateTime?
+    username      String?        @unique
     image         String?
     posts         Post[]
     accounts      Account[]
     sessions      Session[]
     Like          Like[]
-    following     Following[] @relation("Follower")
-    followers     Following[] @relation("Follwing")
+    following     Following[]    @relation("Follower")
+    followers     Following[]    @relation("Follwing")
     description   String?
-    createdAt     DateTime    @default(now())
-    banned        Boolean     @default(false)
+    createdAt     DateTime       @default(now())
+    status        Account_Status @default(NOT_COMPLETED_REGISTRATION)
+}
+
+enum Account_Status {
+    NOT_COMPLETED_REGISTRATION
+    ACTIVE
+    BANNED
 }
 
 model VerificationToken {
