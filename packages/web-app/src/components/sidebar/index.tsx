@@ -1,4 +1,5 @@
-import { signIn } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import React from "react";
 import Auth from "../auth";
 import Modal from "../modal";
@@ -6,6 +7,7 @@ type props = {
   children: React.ReactNode;
 };
 const Index = (props: props) => {
+  const { status, data: session } = useSession();
   return (
     <>
       <link
@@ -107,29 +109,73 @@ const Index = (props: props) => {
                   </li>
                 </Auth>
                 <li>
-                  <a
-                    href="#"
-                    className="mx-auto mb-12 flex h-12 w-52 transform flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
-                  >
-                    <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
-                      <i className="bx bx-log-in"></i>
-                    </span>
-                    <span
-                      className="text-lg font-medium"
-                      onClick={() => {
-                        void (async () => {
-                          await signIn("google", {
-                            redirect: true,
-                            callbackUrl: "/",
-                          }).catch(() => {
-                            return;
-                          });
-                        })();
-                      }}
-                    >
-                      Inloggen
-                    </span>
-                  </a>
+                  {/* Check if user is logged in */}
+                  {status === "unauthenticated" ? (
+                    <>
+                      <a
+                        href="#"
+                        className="mx-auto mb-12 flex h-12 w-52 transform flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
+                      >
+                        <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
+                          <i className="bx bx-log-in"></i>
+                        </span>
+                        <span
+                          className="text-lg font-medium"
+                          onClick={() => {
+                            void (async () => {
+                              await signIn("google", {
+                                redirect: true,
+                                callbackUrl: "/",
+                              }).catch(() => {
+                                return;
+                              });
+                            })();
+                          }}
+                        >
+                          Inloggen
+                        </span>
+                      </a>
+                    </>
+                  ) : (
+                    <div className="ml-5 flex flex-row justify-center">
+                      {typeof session?.user.image == "string" ? (
+                        <div>
+                          <Image
+                            src={session.user.image}
+                            alt={"Image"}
+                            width={40}
+                            height={40}
+                            className={"rounded-full"}
+                          ></Image>
+                        </div>
+                      ) : null}
+                      <div className="ml-2 font-bold ">
+                        {session?.user.name}
+                      </div>
+
+                      <a
+                        href="#"
+                        className="mx-auto mb-12 flex h-12 w-44 transform flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
+                      >
+                        <span className="ml-4 inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
+                          <i className="bx bx-log-out"></i>
+                        </span>
+
+                        <span
+                          className="text-lg font-medium"
+                          onClick={() => {
+                            void (async () => {
+                              await signOut().catch(() => {
+                                return;
+                              });
+                            })();
+                          }}
+                        >
+                          Uitloggen
+                        </span>
+                      </a>
+                    </div>
+                  )}
                 </li>
               </ul>
             </div>
