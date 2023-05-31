@@ -35,6 +35,7 @@ export const postRouter = createTRPCRouter({
             User: {
               select: {
                 name: true,
+                image: true,
               },
             },
           },
@@ -67,6 +68,7 @@ export const postRouter = createTRPCRouter({
             User: {
               select: {
                 name: true,
+                image: true,
               },
             },
           },
@@ -102,6 +104,7 @@ export const postRouter = createTRPCRouter({
           User: {
             select: {
               name: true,
+              image: true,
             },
           },
         },

@@ -28,13 +28,14 @@ export const ourFileRouter = {
       if (post.userId !== session.user.id)
         throw new Error("Not your post", { cause: "Not your post" });
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { postId: postId, session: session };
+      return { post: post, session: session };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       await prisma.post.update({
-        where: { id: metadata.postId },
+        where: { id: metadata.post.id },
         data: {
           image: file.url,
+          updatedAt: metadata.post.createdAt,
         },
       });
     }),

@@ -12,14 +12,13 @@ import { useCookies } from "react-cookie";
 
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
-import { ZodError, set } from "zod";
 export const CreatePost = () => {
   const { data: session } = useSession();
   const startUploadRef = useRef<(() => void) | null>(null);
   const textArea = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useDebouncedState("", 200);
   const [howManyFiles, setHowManyFiles] = useState(0);
-  const [cookies, setCookies, removeCookies] = useCookies(["post"]);
+  const [, setCookies, removeCookies] = useCookies(["post"]);
   const createPost = api.posts.create.useMutation({
     onMutate: () => {
       toast.loading("Creating post...", { id: "createPost" });
@@ -91,7 +90,7 @@ export const CreatePost = () => {
           });
         }}
         files={(numberOfFiles) => {
-          setHowManyFiles(numberOfFiles as number);
+          setHowManyFiles(numberOfFiles);
         }}
         disabled={createPost.isLoading}
       />
