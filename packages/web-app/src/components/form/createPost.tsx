@@ -14,11 +14,12 @@ import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 export const CreatePost = () => {
   const { data: session } = useSession();
-  const startUploadRef = useRef<(() => void) | null>(null);
-  const textArea = useRef<HTMLTextAreaElement>(null);
-  const [message, setMessage] = useDebouncedState("", 200);
-  const [howManyFiles, setHowManyFiles] = useState(0);
-  const [, setCookies, removeCookies] = useCookies(["post"]);
+  const startUploadRef = useRef<(() => void) | null>(null); // This is a hack to get around the fact that UploadButton doesn't have a prop for this
+  const textArea = useRef<HTMLTextAreaElement>(null); // To clean up the textarea after posting
+  const [message, setMessage] = useDebouncedState("", 200); // Debounce the message so we don't re-render too much
+  const [howManyFiles, setHowManyFiles] = useState(0); // To keep track of how many files we're uploading
+  const [, setCookies, removeCookies] = useCookies(["post"]); // To keep track of the post ID
+  // Mutations
   const createPost = api.posts.create.useMutation({
     onMutate: () => {
       toast.loading("Creating post...", { id: "createPost" });
@@ -31,6 +32,7 @@ export const CreatePost = () => {
       });
     },
     onSuccess: (res) => {
+      // if we have files, set the post ID cookie and start the upload (UploadThing will handle the rest)
       if (howManyFiles > 0) {
         setCookies("post", res.id, {
           secure: true,
@@ -43,6 +45,7 @@ export const CreatePost = () => {
       setMessage("");
     },
   });
+  // event handlers
   const tweet = () => {
     createPost.mutate({ text: message });
   };

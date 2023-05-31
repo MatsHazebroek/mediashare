@@ -2,7 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
 import Auth from "../auth";
-import Modal from "../modal";
+import Modal from "../form/tweetButtonModal";
 import DropDownMenu from "../dropdownmenu";
 
 type props = {
