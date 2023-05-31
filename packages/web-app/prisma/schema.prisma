@@ -18,7 +18,7 @@ model Post {
     text      String   @db.Text
     image     String?
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    updatedAt DateTime @default(now())
     Like      Like[]
     User      User     @relation(fields: [userId], references: [id])
     userId    String
@@ -54,7 +54,7 @@ model Comment {
     @@index([replyId])
 }
 
-model following {
+model Following {
     id String @id @default(cuid())
 
     user   User   @relation("Follower", fields: [userId], references: [id], onDelete: Cascade)
@@ -109,8 +109,8 @@ model User {
     accounts      Account[]
     sessions      Session[]
     Like          Like[]
-    following     following[] @relation("Follower")
-    followers     following[] @relation("Follwing")
+    following     Following[] @relation("Follower")
+    followers     Following[] @relation("Follwing")
     description   String?
     createdAt     DateTime    @default(now())
     banned        Boolean     @default(false)

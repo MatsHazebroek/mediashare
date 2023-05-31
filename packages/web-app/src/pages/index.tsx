@@ -46,7 +46,7 @@ const Posts = () => {
             <span className="ml-2 text-blue-500">@{post.User.name}</span>
             <span className="ml-2 text-gray-400">
               • Posted {timeSince(post.createdAt)}{" "}
-              {post.updatedAt != post.createdAt
+              {post.updatedAt.toString() !== post.createdAt.toString()
                 ? "• Last edited " + timeSince(post.updatedAt)
                 : ""}
             </span>

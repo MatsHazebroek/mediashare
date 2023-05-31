@@ -35,7 +35,6 @@ export const ourFileRouter = {
         where: { id: metadata.post.id },
         data: {
           image: file.url,
-          updatedAt: metadata.post.createdAt,
         },
       });
     }),
