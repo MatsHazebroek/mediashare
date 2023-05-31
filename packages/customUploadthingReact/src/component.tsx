@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { FileWithPath } from "react-dropzone";
 import { useDropzone } from "react-dropzone";
 
@@ -78,6 +78,7 @@ export function UploadButton<TRouter extends void | FileRouter = void>(props: {
   ) => void;
   onUploadError?: (error: Error) => void;
   startUpload?: (startUpload: () => void) => void;
+  files?: (numberOfFiles: number) => void;
   disabled?: boolean;
 }) {
   const { startUpload, isUploading, permittedFileInfo } =
@@ -86,14 +87,17 @@ export function UploadButton<TRouter extends void | FileRouter = void>(props: {
       onClientUploadComplete: props.onClientUploadComplete,
       onUploadError: props.onUploadError,
     });
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File[] | null>(null);
   useEffect(() => {
     if (props.startUpload) props.startUpload(upload);
-  }, [startUpload, file]);
+    if (props.files) props.files(file?.length ?? 0);
+  }, [startUpload, file, fileInputRef]);
   const upload = useCallback(() => {
     if (!file) return;
     startUpload(file);
-  }, [file, startUpload]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [file, startUpload, fileInputRef]);
   const { fileTypes, multiple } = generatePermittedFileTypes(
     permittedFileInfo?.config
   );
@@ -106,6 +110,7 @@ export function UploadButton<TRouter extends void | FileRouter = void>(props: {
           type="file"
           multiple={multiple}
           accept={generateMimeTypes(fileTypes ?? [])?.join(", ")}
+          ref={fileInputRef}
           onChange={(e) => {
             if (!e.target.files) return;
             setFile(Array.from(e.target.files));
