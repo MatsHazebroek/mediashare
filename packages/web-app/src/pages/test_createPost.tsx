@@ -1,15 +1,29 @@
 import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "~/server/uploadthing";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { type NextPage } from "next";
 import Head from "next/head";
-
+import { api } from "~/utils/api";
+import { useCookies } from "react-cookie";
 const Home: NextPage = () => {
+  const [cookies, setCookies, removeCookies] = useCookies(["post"]);
   const startUploadRef = useRef<(() => void) | null>(null);
   const handleStartUpload = (startUpload: () => void) => {
     startUploadRef.current = startUpload;
   };
+  const [message, setMessage] = useState("");
+  const createPost = api.posts.create.useMutation({
+    onSuccess: (res) => {
+      setCookies("post", res.id, {
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+      });
+      if (startUploadRef.current) startUploadRef.current();
+    },
+  });
+
   return (
     <>
       <Head>
@@ -22,12 +36,12 @@ const Home: NextPage = () => {
           <textarea
             className="bg-gray-100 text-black"
             placeholder="What's on your mind?"
+            onInput={(e) => setMessage(e.currentTarget.value)}
           ></textarea>
         </form>
         <button
           onClick={() => {
-            console.log("startUploadCall", startUploadRef);
-            if (startUploadRef.current) startUploadRef.current();
+            createPost.mutate({ text: message });
           }}
         >
           This should now upload :{")"}{" "}
@@ -39,11 +53,14 @@ const Home: NextPage = () => {
             // Do something with the response
             console.log("Files: ", res);
             alert("Post created! (with upload)");
+            removeCookies("post");
           }}
           onUploadError={(error: Error) => {
             // Do something with the error.
             alert(`ERROR! ${error.message} ${JSON.stringify(error)}`);
+            removeCookies("post");
           }}
+          disabled={createPost.isLoading}
         />
       </main>
     </>

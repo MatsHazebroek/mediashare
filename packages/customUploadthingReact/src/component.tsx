@@ -78,6 +78,7 @@ export function UploadButton<TRouter extends void | FileRouter = void>(props: {
   ) => void;
   onUploadError?: (error: Error) => void;
   startUpload?: (startUpload: () => void) => void;
+  disabled?: boolean;
 }) {
   const { startUpload, isUploading, permittedFileInfo } =
     useUploadThing<string>({
@@ -89,15 +90,13 @@ export function UploadButton<TRouter extends void | FileRouter = void>(props: {
   useEffect(() => {
     if (props.startUpload) props.startUpload(upload);
   }, [startUpload, file]);
-  const { fileTypes, multiple } = generatePermittedFileTypes(
-    permittedFileInfo?.config
-  );
   const upload = useCallback(() => {
-    console.log("uploading");
-    console.log(file, startUpload);
     if (!file) return;
     startUpload(file);
   }, [file, startUpload]);
+  const { fileTypes, multiple } = generatePermittedFileTypes(
+    permittedFileInfo?.config
+  );
 
   return (
     <div className="ut-flex ut-flex-col ut-gap-1 ut-items-center ut-justify-center">
@@ -110,9 +109,9 @@ export function UploadButton<TRouter extends void | FileRouter = void>(props: {
           onChange={(e) => {
             if (!e.target.files) return;
             setFile(Array.from(e.target.files));
-            console.log(file);
             if (props.startUpload == undefined) upload();
           }}
+          disabled={props.disabled}
         />
         <span className="ut-px-3 ut-py-2 ut-text-white">
           {isUploading ? <Spinner /> : `Choose File${multiple ? `(s)` : ``}`}

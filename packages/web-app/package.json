@@ -28,6 +28,7 @@
     "next": "^13.4.1",
     "next-auth": "^4.21.0",
     "react": "18.2.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "superjson": "1.12.2",
