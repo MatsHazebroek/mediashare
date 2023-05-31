@@ -1,6 +1,7 @@
 import { signIn } from "next-auth/react";
 import React from "react";
 import Auth from "../auth";
+import Modal from "../modal";
 type props = {
   children: React.ReactNode;
 };
@@ -94,15 +95,15 @@ const Index = (props: props) => {
               <ul className="flex flex-col">
                 <Auth>
                   <li>
-                    <a
-                      href=""
-                      className="mx-auto mb-4 mt-10 flex h-12 w-52 flex-row items-center rounded bg-[#1D9BF9] text-white transition-colors duration-200 hover:bg-[#47aefc]"
-                    >
+                    <div className="mx-auto mb-4 mt-10 flex items-center justify-center">
                       {/* <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
                     
                 </span> */}
-                      <span className="mx-auto text-lg font-medium">Tweet</span>
-                    </a>
+                      <span className="mx-auto text-lg font-medium">
+                        {" "}
+                        <Modal />
+                      </span>
+                    </div>
                   </li>
                 </Auth>
                 <li>
@@ -159,9 +160,10 @@ const Index = (props: props) => {
                 type="button"
                 className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 dark:hover:bg-gray-800"
               >
-                <span className="text-sm text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-500">
+                {/* <span className="text-sm text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-500">
                   Tweet
-                </span>
+                </span> */}
+                <Modal />
               </button>
             </Auth>
             <button

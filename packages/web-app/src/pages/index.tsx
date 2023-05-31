@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
-import Modal from "~/components/modal";
 import Sidebar from "../components/sidebar";
 
 function Home() {
