@@ -74,6 +74,10 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
   errorFormatter({ shape, error }) {
     return {
       ...shape,
+      message:
+        error.cause instanceof ZodError
+          ? ((JSON.parse(error.message) as unknown[])[0] as ZodError).message
+          : error.message,
       data: {
         ...shape.data,
         zodError:
