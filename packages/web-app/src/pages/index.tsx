@@ -3,7 +3,9 @@ import Head from "next/head";
 import Sidebar from "../components/sidebar";
 import { CreatePost } from "~/components/form/createPost";
 import { Posts } from "~/components/posts";
+import { useSession } from "next-auth/react";
 const PageContent: NextPage = () => {
+  const { status } = useSession();
   return (
     <>
       <Head>
@@ -14,7 +16,8 @@ const PageContent: NextPage = () => {
       <main>
         <Sidebar>
           <div className="m-2 bg-white p-4 shadow-md">
-            <CreatePost />
+            {status === "authenticated" && <CreatePost />}
+
             <div className="mt-4 border-t border-gray-200 pt-4">
               <Posts />
             </div>

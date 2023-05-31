@@ -1,6 +1,7 @@
 import { api } from "~/utils/api";
 import Image from "next/image";
 import { timeSince } from "./formatTime";
+import { UserIcon } from "./userIcon";
 export const Posts = () => {
   const posts = api.posts.getAll.useQuery({});
   if (posts.isLoading) return <div>Loading...</div>;
@@ -11,13 +12,18 @@ export const Posts = () => {
         <div key={post.id + "post"} className="bg-gray-100 p-4 shadow-md">
           <div className="mb-4 flex flex-row text-gray-600">
             {typeof post.User.image == "string" ? (
-              <Image
-                src={post.User.image}
-                alt={"Image"}
-                width={40}
+              <UserIcon
+                User={{
+                  followers: post.User._count.followers || 0,
+                  following: post.User._count.following || 0,
+                  username: post.User.name ?? "",
+                  description: post.User.description ?? "",
+                  id: post.User.id,
+                  image: post.User.image,
+                }}
                 height={40}
-                className={"rounded-full"}
-              ></Image>
+                width={40}
+              />
             ) : null}
             <span className="ml-2 text-blue-500">@{post.User.name}</span>
             <span className="ml-2 text-gray-400">
