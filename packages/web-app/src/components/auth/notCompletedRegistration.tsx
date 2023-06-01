@@ -2,7 +2,7 @@ import { useDebouncedState } from "@mantine/hooks";
 import * as Dialog from "@radix-ui/react-dialog";
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
 type props = {
@@ -10,35 +10,48 @@ type props = {
 };
 export const NotCompletedRegistration = (props: props) => {
   const { data: session, status } = useSession();
-  console.log(session?.user.status === "NOT_COMPLETED_REGISTRATION");
-  const [completedRegistration, setCompletedRegistration] =
-    useState<boolean>(false);
+  const [completedRegistration, setCompletedRegistration] = useState<
+    boolean | null
+  >(null);
   useEffect(() => {
-    console.log(completedRegistration, "ewfpjewfoijfwe");
     if (
-      session?.user.status !== "NOT_COMPLETED_REGISTRATION" &&
-      completedRegistration == false
+      session?.user.status === "NOT_COMPLETED_REGISTRATION" &&
+      session?.user.status !== undefined &&
+      completedRegistration === null
     ) {
       setCompletedRegistration(true);
     }
-  }, [completedRegistration, session]);
+  }, [session, completedRegistration]);
   return (
     <>
-      <Dialog.Root open={completedRegistration == false}>
+      <Dialog.Root
+        open={completedRegistration == null ? false : completedRegistration}
+      >
         <Dialog.Trigger />
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-blackA9 data-[state=open]:animate-overlayShow" />
           <Dialog.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[100vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
             <Form
               session={session}
-              onSuccess={() => setCompletedRegistration(true)}
+              onSuccess={() => {
+                setCompletedRegistration(false);
+                () =>
+                  api
+                    .useContext()
+                    .invalidate()
+                    .catch(() => {
+                      return;
+                    });
+              }}
             />
-            {completedRegistration && <span></span>}
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
-
-      {props.children}
+      {completedRegistration == null
+        ? props.children
+        : completedRegistration
+        ? null
+        : props.children}
     </>
   );
 };
