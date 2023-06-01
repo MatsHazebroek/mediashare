@@ -2,21 +2,29 @@ import { useDebouncedState } from "@mantine/hooks";
 import * as Dialog from "@radix-ui/react-dialog";
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
 type props = {
   children: React.ReactNode;
 };
 export const NotCompletedRegistration = (props: props) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   console.log(session?.user.status === "NOT_COMPLETED_REGISTRATION");
-  const [completedRegistration, setCompletedRegistration] = useState(
-    session?.user.status === "NOT_COMPLETED_REGISTRATION"
-  );
+  const [completedRegistration, setCompletedRegistration] =
+    useState<boolean>(false);
+  useEffect(() => {
+    console.log(completedRegistration, "ewfpjewfoijfwe");
+    if (
+      session?.user.status !== "NOT_COMPLETED_REGISTRATION" &&
+      completedRegistration == false
+    ) {
+      setCompletedRegistration(true);
+    }
+  }, [completedRegistration, session]);
   return (
     <>
-      <Dialog.Root open={completedRegistration}>
+      <Dialog.Root open={completedRegistration == false}>
         <Dialog.Trigger />
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-blackA9 data-[state=open]:animate-overlayShow" />
@@ -25,6 +33,7 @@ export const NotCompletedRegistration = (props: props) => {
               session={session}
               onSuccess={() => setCompletedRegistration(true)}
             />
+            {completedRegistration && <span></span>}
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
@@ -54,6 +63,7 @@ const Form = (props: { session: Session | null; onSuccess: () => void }) => {
       toast.success("Registration completed", {
         id: "complete-registration",
       });
+      props.onSuccess();
     },
   });
   const submit = () => {
