@@ -31,12 +31,6 @@ const DropdownMenuDemo = () => {
           >
             Uitloggen
           </DropdownMenu.Item>
-          <DropdownMenu.Item className="group relative flex h-[25px] select-none items-center rounded-[3px] px-[5px] pl-[25px] text-[13px] leading-none text-black outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-[#1D9BF9] data-[highlighted]:text-violet1">
-            New Window{" "}
-            <div className="ml-auto pl-[20px] text-mauve11 group-data-[disabled]:text-mauve8 group-data-[highlighted]:text-white">
-              ⌘+N
-            </div>
-          </DropdownMenu.Item>
 
           <DropdownMenu.Arrow className="fill-white" />
         </DropdownMenu.Content>

@@ -9,7 +9,10 @@ export const Posts = () => {
   return (
     <>
       {posts.data.map((post) => (
-        <div key={post.id + "post"} className="bg-gray-100 p-4 shadow-md">
+        <div
+          key={post.id + "post"}
+          className="mb-3 border-gray-200 bg-gray-100 p-4 shadow-md"
+        >
           <div className="mb-4 flex flex-row text-gray-600">
             {typeof post.User.image == "string" ? (
               <UserIcon
@@ -33,7 +36,15 @@ export const Posts = () => {
                 : ""}
             </span>
           </div>
-          <p>{post.text}</p>
+          <p className="mb-2">{post.text}</p>
+          {typeof post.image == "string" ? (
+            <Image
+              src={post.image}
+              height={200}
+              width={200}
+              alt={"Foto"}
+            ></Image>
+          ) : null}
         </div>
       ))}
     </>

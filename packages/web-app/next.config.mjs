@@ -22,7 +22,11 @@ const config = {
     esmExternals: false, // THIS IS THE FLAG THAT MATTERS
   },
   images: {
-    domains: ["lh3.googleusercontent.com", "images.pexels.com"],
+    domains: [
+      "lh3.googleusercontent.com",
+      "images.pexels.com",
+      "uploadthing.com",
+    ],
   },
 };
 export default config;

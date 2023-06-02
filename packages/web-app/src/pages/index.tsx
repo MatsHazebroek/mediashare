@@ -3,10 +3,8 @@ import Head from "next/head";
 import Sidebar from "../components/sidebar";
 import { CreatePost } from "~/components/form/createPost";
 import { Posts } from "~/components/posts";
-import { useSession } from "next-auth/react";
 import Auth from "~/components/auth";
 const PageContent: NextPage = () => {
-  const { status } = useSession();
   return (
     <>
       <Head>
