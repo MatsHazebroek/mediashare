@@ -159,6 +159,14 @@ export const postRouter = createTRPCRouter({
             image: true,
             createdAt: true,
             updatedAt: true,
+            Like: {
+              select: {
+                date: true,
+              },
+              where: {
+                userId: ctx.session?.user.id,
+              },
+            },
             User: {
               select: {
                 _count: { select: { followers: true, following: true } },
