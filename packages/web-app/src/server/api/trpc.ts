@@ -74,6 +74,10 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
   errorFormatter({ shape, error }) {
     return {
       ...shape,
+      message:
+        error.cause instanceof ZodError
+          ? ((JSON.parse(error.message) as unknown[])[0] as ZodError).message
+          : error.message,
       data: {
         ...shape.data,
         zodError:
@@ -108,7 +112,11 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session || !ctx.session.user) {
+  if (
+    !ctx.session ||
+    !ctx.session.user ||
+    ctx.session.user.status !== "ACTIVE"
+  ) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({

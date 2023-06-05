@@ -18,7 +18,7 @@ model Post {
     text      String   @db.Text
     image     String?
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    updatedAt DateTime @default(now())
     Like      Like[]
     User      User     @relation(fields: [userId], references: [id])
     userId    String
@@ -54,7 +54,7 @@ model Comment {
     @@index([replyId])
 }
 
-model following {
+model Following {
     id String @id @default(cuid())
 
     user   User   @relation("Follower", fields: [userId], references: [id], onDelete: Cascade)
@@ -76,12 +76,12 @@ model Account {
     type              String
     provider          String
     providerAccountId String
-    refresh_token     String? //@db.Text
-    access_token      String? //@db.Text
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String? //@db.Text
+    id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -100,20 +100,27 @@ model Session {
 }
 
 model User {
-    id            String      @id @default(cuid())
+    id            String         @id @default(cuid())
     name          String?
-    email         String?     @unique
+    email         String?        @unique
     emailVerified DateTime?
+    username      String?        @unique
     image         String?
     posts         Post[]
     accounts      Account[]
     sessions      Session[]
     Like          Like[]
-    following     following[] @relation("Follower")
-    followers     following[] @relation("Follwing")
+    following     Following[]    @relation("Follower")
+    followers     Following[]    @relation("Follwing")
     description   String?
-    createdAt     DateTime    @default(now())
-    banned        Boolean     @default(false)
+    createdAt     DateTime       @default(now())
+    status        Account_Status @default(NOT_COMPLETED_REGISTRATION)
+}
+
+enum Account_Status {
+    NOT_COMPLETED_REGISTRATION
+    ACTIVE
+    BANNED
 }
 
 model VerificationToken {

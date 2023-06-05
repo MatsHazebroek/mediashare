@@ -4,18 +4,17 @@ type props = {
   children: React.ReactNode;
 };
 
-function Index(props: props) {
+function Auth(props: props) {
   const { status, data: session } = useSession();
-
-  if (status == "unauthenticated") {
-    return <></>;
-  }
-
-  if (status == "authenticated" && session !== null) {
+  if (
+    status == "authenticated" &&
+    session !== null &&
+    session.user.status == "ACTIVE"
+  ) {
     return <>{props.children}</>;
   }
 
-  return <div></div>;
+  return <></>;
 }
 
-export default Index;
+export default Auth;
