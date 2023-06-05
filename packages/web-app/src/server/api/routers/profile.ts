@@ -1,11 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
   completeRegistration: publicProcedure
@@ -42,5 +38,44 @@ export const profileRouter = createTRPCRouter({
           description: true,
         },
       });
+    }),
+  get: publicProcedure
+    .input(z.string().cuid2())
+    .query(async ({ ctx, input }) => {
+      return await ctx.prisma.user
+        .findFirstOrThrow({
+          where: {
+            id: input,
+          },
+          select: {
+            createdAt: true,
+            id: true,
+            username: true,
+            description: true,
+            image: true,
+            status: true,
+            _count: {
+              select: {
+                followers: true,
+                following: true,
+                posts: true,
+              },
+            },
+          },
+        })
+        .then((user) => {
+          if (user.status !== "ACTIVE")
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "User not found",
+            });
+          return { ...user, status: undefined };
+        })
+        .catch(() => {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "User not found",
+          });
+        });
     }),
 });

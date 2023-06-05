@@ -115,6 +115,12 @@ model User {
     description   String?
     createdAt     DateTime       @default(now())
     status        Account_Status @default(NOT_COMPLETED_REGISTRATION)
+    Role          Account_Role   @default(USER)
+}
+
+enum Account_Role {
+    ADMIN
+    USER
 }
 
 enum Account_Status {
