@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { env } from "~/env.mjs";
 
 import {
   createTRPCRouter,
@@ -14,6 +15,7 @@ export const postRouter = createTRPCRouter({
         following: z.boolean().optional(),
         user: z.string().cuid2().optional(),
         page: z.number().min(0).optional(),
+        howMany: z.number().min(1).max(50).default(25),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -49,8 +51,8 @@ export const postRouter = createTRPCRouter({
               status: "ACTIVE",
             },
           },
-          take: 50,
-          skip: input.page ? input.page * 50 : 0,
+          take: input.howMany,
+          skip: input.page ? input.page * input.howMany : 0,
         });
       }
 
@@ -90,8 +92,8 @@ export const postRouter = createTRPCRouter({
               status: "ACTIVE",
             },
           },
-          take: 50,
-          skip: input.page ? input.page * 50 : 0,
+          take: input.howMany,
+          skip: input.page ? input.page * input.howMany : 0,
         });
       }
       // TODO: recommend posts based on user the followers that the user is following
@@ -125,8 +127,8 @@ export const postRouter = createTRPCRouter({
             status: "ACTIVE",
           },
         },
-        take: 50,
-        skip: input.page ? input.page * 50 : 0,
+        take: input.howMany,
+        skip: input.page ? input.page * input.howMany : 0,
       });
     }),
   getOne: publicProcedure
@@ -184,5 +186,126 @@ export const postRouter = createTRPCRouter({
           id: true,
         },
       });
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        text: z.string().min(1).max(500),
+        post: z.string().cuid2(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post
+        .findUniqueOrThrow({
+          where: {
+            id: input.post,
+          },
+        })
+        .catch(() => {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Post not found",
+          });
+        });
+      if (post.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Post not found",
+        });
+      }
+      // check if post is ebitable (based on env variable)
+      if (env.HOW_LONG_ARE_POSTS_EDITABLE) {
+        const howLongEditable = new Date();
+        howLongEditable.setMinutes(
+          howLongEditable.getMinutes() + env.HOW_LONG_ARE_POSTS_EDITABLE
+        );
+        if (post.createdAt > howLongEditable) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Post no longer editable",
+          });
+        }
+      }
+      return await ctx.prisma.post.update({
+        data: {
+          text: input.text,
+        },
+        where: {
+          id: input.post,
+        },
+      });
+    }),
+  comment: protectedProcedure
+    .input(
+      z.object({
+        text: z.string().min(1).max(500),
+        post: z.string().cuid2(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.create({
+        data: {
+          text: input.text,
+          userId: ctx.session.user.id,
+        },
+      });
+      return await ctx.prisma.comment
+        .create({
+          data: {
+            mainId: input.post,
+            replyId: post.id,
+          },
+        })
+        .then(() => {
+          return true;
+        })
+        .catch(() => {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Post not found",
+          });
+        });
+    }),
+  like: protectedProcedure
+    .input(
+      z.object({
+        post: z.string().cuid2(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const alreadyLiked = await ctx.prisma.like.findFirst({
+        where: {
+          postId: input.post,
+        },
+      });
+      if (alreadyLiked) {
+        await ctx.prisma.like
+          .delete({
+            where: {
+              id: alreadyLiked.id,
+            },
+          })
+          .catch(() => {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Post not found",
+            });
+          });
+        return true;
+      }
+      await ctx.prisma.like
+        .create({
+          data: {
+            userId: ctx.session.user.id,
+            postId: input.post,
+          },
+        })
+        .catch(() => {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Post not found",
+          });
+        });
+      return true;
     }),
 });

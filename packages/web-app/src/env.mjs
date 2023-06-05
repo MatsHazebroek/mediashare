@@ -19,9 +19,10 @@ export const env = createEnv({
       // VERCEL_URL doesn't include `https` so it cant be validated as a URL
       process.env.VERCEL ? z.string().min(1) : z.string().url()
     ),
-    // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
+    // UploadThing
     UPLOADTHING_SECRET: z.string().min(1),
     UPLOADTHING_APP_ID: z.string().min(1),
+    // Postgres (database)
     POSTGRES_URL: z.string().min(1),
     POSTGRES_PRISMA_URL: z.string().min(1),
     POSTGRES_URL_NON_POOLING: z.string().min(1),
@@ -29,8 +30,11 @@ export const env = createEnv({
     POSTGRES_HOST: z.string().min(1),
     POSTGRES_PASSWORD: z.string().min(1),
     POSTGRES_DATABASE: z.string().min(1),
+    // Google OAuth
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
+    // Settings
+    HOW_LONG_ARE_POSTS_EDITABLE: z.number().int().positive().optional(),
   },
 
   /**
@@ -61,5 +65,6 @@ export const env = createEnv({
     POSTGRES_DATABASE: process.env.POSTGRES_DATABASE,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    HOW_LONG_ARE_POSTS_EDITABLE: process.env.HOW_LONG_ARE_POSTS_EDITABLE,
   },
 });
