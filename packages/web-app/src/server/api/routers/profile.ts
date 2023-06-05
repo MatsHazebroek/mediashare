@@ -47,7 +47,13 @@ export const profileRouter = createTRPCRouter({
           where: {
             id: input,
           },
-          include: {
+          select: {
+            createdAt: true,
+            id: true,
+            username: true,
+            description: true,
+            image: true,
+            status: true,
             _count: {
               select: {
                 followers: true,
@@ -56,6 +62,14 @@ export const profileRouter = createTRPCRouter({
               },
             },
           },
+        })
+        .then((user) => {
+          if (user.status !== "ACTIVE")
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "User not found",
+            });
+          return { ...user, status: undefined };
         })
         .catch(() => {
           throw new TRPCError({
