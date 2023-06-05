@@ -212,31 +212,31 @@ export const postRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // check if post exists for the user (or if user is admin)
       const post = await ctx.prisma.post
-        .findUniqueOrThrow({
+        .findFirstOrThrow({
           where: {
             id: input.post,
+            userId: ctx.session.user.id,
           },
         })
         .catch(() => {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Post not found",
-          });
+          if (ctx.session?.user.role !== "ADMIN")
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Post not found",
+            });
         });
-      if (post.userId !== ctx.session.user.id) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Post not found",
-        });
-      }
       // check if post is ebitable (based on env variable)
       if (env.HOW_LONG_ARE_POSTS_EDITABLE) {
         const howLongEditable = new Date();
         howLongEditable.setMinutes(
           howLongEditable.getMinutes() + env.HOW_LONG_ARE_POSTS_EDITABLE
         );
-        if (post.createdAt > howLongEditable) {
+        if (
+          (!post || post.createdAt > howLongEditable) &&
+          ctx.session?.user.role !== "ADMIN"
+        ) {
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "Post no longer editable",
@@ -247,6 +247,26 @@ export const postRouter = createTRPCRouter({
         data: {
           text: input.text,
         },
+        where: {
+          id: input.post,
+        },
+      });
+    }),
+  delete: protectedProcedure
+    .input(z.object({ post: z.string().cuid2() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.post
+        .findFirstOrThrow({
+          where: { id: input.post, userId: ctx.session.user.id },
+        })
+        .catch(() => {
+          if (ctx.session.user.role !== "ADMIN")
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Post not found",
+            });
+        });
+      return await ctx.prisma.post.delete({
         where: {
           id: input.post,
         },
@@ -295,6 +315,7 @@ export const postRouter = createTRPCRouter({
           postId: input.post,
         },
       });
+      // if already liked, unlike
       if (alreadyLiked) {
         await ctx.prisma.like
           .delete({
@@ -310,6 +331,7 @@ export const postRouter = createTRPCRouter({
           });
         return true;
       }
+      // if not liked, like
       await ctx.prisma.like
         .create({
           data: {

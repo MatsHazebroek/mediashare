@@ -3,12 +3,15 @@ import {
   getServerSession,
   type NextAuthOptions,
   type DefaultSession,
-  DefaultUser,
 } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
-import type { Account_Status, User as dbUserType } from "@prisma/client";
+import type {
+  Account_Role,
+  Account_Status,
+  User as dbUserType,
+} from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 
 /**
@@ -23,6 +26,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       status: Account_Status;
+      role: Account_Role;
     } & DefaultSession["user"];
   }
 
@@ -44,6 +48,7 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: user.id,
         status: user.status,
+        role: user.Role,
       },
     }),
   },

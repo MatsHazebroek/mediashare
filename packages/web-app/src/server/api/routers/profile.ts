@@ -1,7 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProceduresWithRoles,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
   completeRegistration: publicProcedure
@@ -12,18 +16,22 @@ export const profileRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      // check if user is logged in
       if (!ctx.session || !ctx.session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
+      // check if there is already a user with this username
       const searchUsername = await ctx.prisma.user.findUnique({
         where: { username: input.username },
       });
+      // if there is a user with this username, throw an error
       if (searchUsername) {
         throw new TRPCError({
           code: "CONFLICT",
           message: "Username already taken",
         });
       }
+      // complete registration
       return await ctx.prisma.user.update({
         where: { id: ctx.session.user.id },
         data: {
@@ -78,4 +86,15 @@ export const profileRouter = createTRPCRouter({
           });
         });
     }),
+  ban: protectedProceduresWithRoles("ADMIN")
+    .input(z.object({ user: z.string().cuid2() }))
+    .mutation(
+      async ({ ctx, input }) =>
+        await ctx.prisma.user.update({
+          where: { id: input.user },
+          data: {
+            status: "BANNED",
+          },
+        })
+    ),
 });
