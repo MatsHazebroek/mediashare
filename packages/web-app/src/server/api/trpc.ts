@@ -67,7 +67,8 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
+import { Account_Role } from "@prisma/client";
 
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
@@ -119,6 +120,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   ) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
   return next({
     ctx: {
       // infers the `session` as non-nullable
@@ -136,3 +138,26 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+export const protectedProceduresWithRoles = (roles?: Account_Role) =>
+  t.procedure.use(({ ctx, next }) => {
+    if (roles) {
+      if (ctx.session?.user.role !== roles) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+    }
+    if (
+      !ctx.session ||
+      !ctx.session.user ||
+      ctx.session.user.status !== "ACTIVE"
+    ) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  });
