@@ -32,7 +32,10 @@ export const postRouter = createTRPCRouter({
             updatedAt: true,
             Like: {
               select: {
-                id: true,
+                date: true,
+              },
+              where: {
+                userId: ctx.session?.user.id,
               },
             },
             User: {
@@ -69,7 +72,10 @@ export const postRouter = createTRPCRouter({
             updatedAt: true,
             Like: {
               select: {
-                id: true,
+                date: true,
+              },
+              where: {
+                userId: ctx.session?.user.id,
               },
             },
             User: {
@@ -109,7 +115,10 @@ export const postRouter = createTRPCRouter({
           updatedAt: true,
           Like: {
             select: {
-              id: true,
+              date: true,
+            },
+            where: {
+              userId: ctx.session?.user.id,
             },
           },
           User: {
