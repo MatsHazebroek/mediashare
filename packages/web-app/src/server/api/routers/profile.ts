@@ -13,6 +13,7 @@ export const profileRouter = createTRPCRouter({
       z.object({
         username: z.string().min(3).max(30),
         description: z.string().max(160).optional(),
+        link: z.string().url().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -47,45 +48,45 @@ export const profileRouter = createTRPCRouter({
         },
       });
     }),
-  get: publicProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.user
-        .findFirstOrThrow({
-          where: {
-            username: input,
-          },
-          select: {
-            createdAt: true,
-            id: true,
-            username: true,
-            description: true,
-            image: true,
-            status: true,
-            _count: {
-              select: {
-                followers: true,
-                following: true,
-                posts: true,
-              },
+  get: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    return await ctx.prisma.user
+      .findFirstOrThrow({
+        where: {
+          username: input,
+        },
+        select: {
+          createdAt: true,
+          id: true,
+          username: true,
+          description: true,
+          image: true,
+          status: true,
+          banner: true,
+          link: true,
+          _count: {
+            select: {
+              followers: true,
+              following: true,
+              posts: true,
             },
           },
-        })
-        .then((user) => {
-          if (user.status !== "ACTIVE")
-            throw new TRPCError({
-              code: "NOT_FOUND",
-              message: "User not found",
-            });
-          return { ...user, status: undefined };
-        })
-        .catch(() => {
+        },
+      })
+      .then((user) => {
+        if (user.status !== "ACTIVE")
           throw new TRPCError({
             code: "NOT_FOUND",
             message: "User not found",
           });
+        return { ...user, status: undefined };
+      })
+      .catch(() => {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
         });
-    }),
+      });
+  }),
   ban: protectedProceduresWithRoles("ADMIN")
     .input(z.object({ user: z.string().cuid2() }))
     .mutation(

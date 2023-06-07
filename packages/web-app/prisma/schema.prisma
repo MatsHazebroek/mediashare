@@ -106,6 +106,7 @@ model User {
     emailVerified DateTime?
     username      String?        @unique
     image         String?
+    banner        String?
     posts         Post[]
     accounts      Account[]
     sessions      Session[]
@@ -113,6 +114,7 @@ model User {
     following     Following[]    @relation("Follower")
     followers     Following[]    @relation("Follwing")
     description   String?
+    link          String?
     createdAt     DateTime       @default(now())
     status        Account_Status @default(NOT_COMPLETED_REGISTRATION)
     Role          Account_Role   @default(USER)

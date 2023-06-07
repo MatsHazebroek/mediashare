@@ -7,13 +7,19 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { userPostsHandler } from "./handlers/userPosts";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
         following: z.boolean().optional(),
-        user: z.string().cuid2().optional(),
+        user: z
+          .object({
+            id: z.string().cuid2(),
+            type: z.enum(["tweets", "media", "likes"]),
+          })
+          .optional(),
         page: z.number().min(0).optional(),
         howMany: z.number().min(1).max(50).default(25),
       })
@@ -21,42 +27,12 @@ export const postRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       // get all posts of a specific user
       if (input.user) {
-        return await ctx.prisma.post.findMany({
-          orderBy: { createdAt: "desc" },
-          select: {
-            _count: { select: { Like: true } },
-            id: true,
-            text: true,
-            image: true,
-            createdAt: true,
-            updatedAt: true,
-            Like: {
-              select: {
-                date: true,
-              },
-              where: {
-                userId: ctx.session?.user.id,
-              },
-            },
-            User: {
-              select: {
-                id: true,
-                _count: { select: { followers: true, following: true } },
-                description: true,
-                name: true,
-                image: true,
-              },
-            },
-          },
-          where: {
-            userId: input.user,
-            User: {
-              status: "ACTIVE",
-            },
-          },
-          take: input.howMany,
-          skip: input.page ? input.page * input.howMany : 0,
-        });
+        return await userPostsHandler(
+          { howMany: input.howMany, page: input.page || 0 },
+          input.user.id,
+          input.user.type,
+          ctx
+        );
       }
 
       // get all posts of the users that the current user is following
