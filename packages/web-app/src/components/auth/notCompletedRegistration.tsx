@@ -2,14 +2,14 @@ import { useDebouncedState } from "@mantine/hooks";
 import * as Dialog from "@radix-ui/react-dialog";
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
 type props = {
   children: React.ReactNode;
 };
 export const NotCompletedRegistration = (props: props) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [completedRegistration, setCompletedRegistration] = useState<
     boolean | null
   >(null);

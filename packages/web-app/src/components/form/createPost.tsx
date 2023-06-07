@@ -12,6 +12,7 @@ import { useCookies } from "react-cookie";
 
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+
 export const CreatePost = () => {
   const { data: session } = useSession();
   const startUploadRef = useRef<(() => void) | null>(null); // This is a hack to get around the fact that UploadButton doesn't have a prop for this
