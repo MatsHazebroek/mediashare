@@ -48,12 +48,12 @@ export const profileRouter = createTRPCRouter({
       });
     }),
   get: publicProcedure
-    .input(z.string().cuid2())
+    .input(z.string())
     .query(async ({ ctx, input }) => {
       return await ctx.prisma.user
         .findFirstOrThrow({
           where: {
-            id: input,
+            username: input,
           },
           select: {
             createdAt: true,
