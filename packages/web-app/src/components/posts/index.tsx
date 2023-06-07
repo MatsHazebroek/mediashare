@@ -8,13 +8,16 @@ type props = {
     type: "tweets" | "media" | "likes";
   };
   yourFollwing?: boolean;
+  mainPostId?: string;
 };
+
 export const Posts = (props: props) => {
   const posts = api.posts.getAll.useQuery({
     page: 0,
     howMany: 10,
     user: props.user,
     following: props.yourFollwing,
+    postId: props.mainPostId,
   });
   if (posts.isLoading) return <div>Loading...</div>;
   if (posts.isError) return <div>Error: {posts.error.message}</div>;
