@@ -8,6 +8,7 @@ import EditProfileModal from "~/components/profile/editProfileModal";
 import { AiOutlineLink } from "react-icons/ai";
 import { BsCalendarDate } from "react-icons/bs";
 import { api } from "~/utils/api";
+import Link from "next/link";
 
 type params = {
   userName: string;
@@ -58,12 +59,12 @@ const PageContent: NextPage = () => {
                   <div className="flex gap-4">
                     <div className="flex items-center justify-center">
                       <AiOutlineLink />
-                      <a
+                      <Link
                         href="google.com"
                         className="text-blue-500 hover:underline"
                       >
                         google.com
-                      </a>
+                      </Link>
                     </div>
 
                     <div className="flex items-center justify-center gap-1">
