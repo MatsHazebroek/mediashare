@@ -22,21 +22,63 @@ export const postRouter = createTRPCRouter({
           .optional(),
         page: z.number().min(0).optional(),
         howMany: z.number().min(1).max(50).default(25),
+        /** Get the comments of the post */
+        postId: z.string().cuid2().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
+      // get the comments of a specific post
+      if (input.postId)
+        return await ctx.prisma.comment
+          .findMany({
+            where: {
+              main: { User: { status: "ACTIVE" }, id: input.postId },
+              reply: { User: { status: "ACTIVE" } },
+            },
+            select: {
+              reply: {
+                select: {
+                  _count: { select: { Like: true } },
+                  id: true,
+                  text: true,
+                  image: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  Like: {
+                    select: {
+                      date: true,
+                    },
+                    where: {
+                      userId: ctx.session?.user.id,
+                    },
+                  },
+                  User: {
+                    select: {
+                      _count: { select: { followers: true, following: true } },
+                      name: true,
+                      id: true,
+                      status: true,
+                      image: true,
+                      description: true,
+                    },
+                  },
+                },
+              },
+            },
+          })
+          .then((comments) => comments.map((comment) => comment.reply));
+
       // get all posts of a specific user
-      if (input.user) {
+      if (input.user)
         return await userPostsHandler(
           { howMany: input.howMany, page: input.page || 0 },
           input.user.id,
           input.user.type,
           ctx
         );
-      }
 
       // get all posts of the users that the current user is following
-      if (input.following && ctx.session) {
+      if (input.following && ctx.session)
         return await ctx.prisma.post.findMany({
           orderBy: { createdAt: "desc" },
           select: {
@@ -77,7 +119,7 @@ export const postRouter = createTRPCRouter({
           take: input.howMany,
           skip: input.page ? input.page * input.howMany : 0,
         });
-      }
+
       // TODO: recommend posts based on user the followers that the user is following
       // user is not logged in, get recent posts
       return await ctx.prisma.post.findMany({
