@@ -9,6 +9,7 @@ import { AiOutlineLink } from "react-icons/ai";
 import { BsCalendarDate } from "react-icons/bs";
 import { api } from "~/utils/api";
 import Link from "next/link";
+import DeleteProfile from "~/components/profile/deleteProfile";
 
 type params = {
   userName: string;
@@ -92,6 +93,13 @@ const PageContent: NextPage = () => {
                 </div>
                 <div className="flex flex-grow items-center justify-end">
                   {users.isSuccess && <EditProfileModal user={users.data} />}
+                  {session?.user.role == "ADMIN" ? (
+                    <>
+                      <DeleteProfile />
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
               <div className="mt-10 flex justify-between">

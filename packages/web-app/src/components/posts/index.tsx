@@ -7,8 +7,11 @@ import { toast } from "react-hot-toast";
 import Auth from "../auth";
 import Like from "./likes";
 import Comments from "./comments";
+import { useSession } from "next-auth/react";
+import Delete from "./delete";
 
 export const Posts = () => {
+  const { data: session } = useSession();
   const posts = api.posts.getAll.useQuery({});
 
   const postLikes = api.posts.like.useMutation({
@@ -18,11 +21,16 @@ export const Posts = () => {
     },
   });
 
-  const postComments = api.posts.comment.useMutation({
-    onSuccess: () => {
-      toast.success("Comment geplaatst!");
+  const deletePost = api.posts.delete.useMutation({
+    onSuccess: (data) => {
+      if (data) toast.success("Verwijderd");
     },
   });
+
+  const submitDelete = (postId: string) => {
+    deletePost.mutate({ post: postId });
+  };
+
   if (posts.isLoading) return <div>Loading...</div>;
   if (posts.isError) return <div>Error: {posts.error.message}</div>;
 
@@ -74,20 +82,31 @@ export const Posts = () => {
                 alt={"Foto"}
               ></Image>
             ) : null}
-            <Auth>
-              <div className="flex gap-3">
-                <Like
-                  isLiked={post.Like.length > 0}
-                  onClick={() => {
-                    submit(post.id);
-                  }}
-                  howManyLikes={post._count.Like}
-                />
-                {/* Verder af maken */}
-                <Comments hasCommented howManyComments={post._count.Comment} />
-              </div>
-            </Auth>
           </Link>
+          <Auth>
+            <div className="flex gap-3">
+              <Like
+                isLiked={post.Like.length > 0}
+                onClick={() => {
+                  submit(post.id);
+                }}
+                howManyLikes={post._count.Like}
+              />
+              {/* Verder af maken */}
+              <Comments hasCommented howManyComments={post._count.Comment} />
+              {session?.user.role === "ADMIN" ? (
+                <>
+                  <Delete
+                    onClick={() => {
+                      submitDelete(post.id);
+                    }}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+          </Auth>
         </div>
       ))}
     </>
