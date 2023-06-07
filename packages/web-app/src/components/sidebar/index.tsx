@@ -57,7 +57,7 @@ const Index = (props: props) => {
               <Auth>
                 <li>
                   <Link
-                    href={"/profile/@" + (session?.user.name || "")}
+                    href={"/profile/" + (session?.user.name || "")}
                     className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                   >
                     <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
@@ -193,7 +193,7 @@ const Index = (props: props) => {
                 className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50"
               >
                 <span className="text-sm text-gray-500 group-hover:text-blue-600">
-                  Profile
+                  Profiel
                 </span>
               </button>
             </Auth>
