@@ -20,7 +20,7 @@ export const UserIcon = (props: props) => {
     <HoverCard.Root>
       <HoverCard.Trigger asChild>
         <Link
-          href={"/"}
+          href={"/profile/" + props.User.username}
           className="inline-block cursor-pointer rounded-full shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] outline-none focus:shadow-[0_0_0_2px_white]"
         >
           <Image
@@ -38,17 +38,22 @@ export const UserIcon = (props: props) => {
           sideOffset={5}
         >
           <div className="flex flex-col gap-[7px]">
-            <Image
-              src={props.User.image}
-              alt={props.alt || "Profile Picture of " + props.User.username}
-              width={props.width}
-              height={props.height}
-              className={"rounded-full " + (props.className || "")}
-            ></Image>
+            <Link href={"/profile/" + props.User.username}>
+              <Image
+                src={props.User.image}
+                alt={props.alt || "Profile Picture of " + props.User.username}
+                width={props.width}
+                height={props.height}
+                className={"rounded-full " + (props.className || "")}
+              ></Image>
+            </Link>
+
             <div className="flex flex-col gap-[15px]">
               <div>
-                <div className="m-0 text-[15px] font-medium leading-[1.5] text-mauve12">
-                  @{props.User.username}
+                <div className="m-0 text-[15px] font-medium leading-[1.5] text-blue-500">
+                  <Link href={"/profile/" + props.User.username}>
+                    @{props.User.username}
+                  </Link>
                 </div>
               </div>
               <div className="m-0 text-[15px] leading-[1.5] text-mauve12">
