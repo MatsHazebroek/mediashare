@@ -11,7 +11,6 @@ import Comments from "./comments";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 
-
 type props = {
   user?: {
     id: string;
@@ -22,7 +21,6 @@ type props = {
 };
 
 export const Posts = (props: props) => {
-
   const { data: session } = useSession();
 
   const posts = api.posts.getAll.useQuery({
