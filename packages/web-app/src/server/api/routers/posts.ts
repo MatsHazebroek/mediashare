@@ -39,7 +39,7 @@ export const postRouter = createTRPCRouter({
             select: {
               reply: {
                 select: {
-                  _count: { select: { Like: true } },
+                  _count: { select: { Like: true, Comment: true } },
                   id: true,
                   text: true,
                   image: true,

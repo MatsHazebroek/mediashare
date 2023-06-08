@@ -49,33 +49,31 @@ export const profileRouter = createTRPCRouter({
         },
       });
     }),
-
-  get: publicProcedure
-    .input(z.string())
-    .query(async ({ ctx, input }) => {
-      return await ctx.prisma.user
-        .findFirstOrThrow({
-          where: {
-            username: input,
+  get: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    return await ctx.prisma.user
+      .findFirstOrThrow({
+        where: {
+          username: input,
+        },
+        select: {
+          createdAt: true,
+          id: true,
+          username: true,
+          description: true,
+          image: true,
+          status: true,
+          followers: {
+            where: {
+              userId: ctx.session?.user?.id,
+            }
           },
-          select: {
-            createdAt: true,
-            id: true,
-            username: true,
-            description: true,
-            image: true,
-            status: true,
-            followers: {
-              where: {
-                userId: ctx.session?.user?.id,
-              }
-            },
-            _count: {
-              select: {
-                followers: true,
-                following: true,
-                posts: true,
-              },
+          banner: true,
+          link: true,
+          _count: {
+            select: {
+              followers: true,
+              following: true,
+              posts: true,
             },
           },
         },
@@ -104,26 +102,38 @@ export const profileRouter = createTRPCRouter({
 
         }
       });
-      if (isFollowing ) {
-        return await ctx.prisma.following.delete({
-          where: {
-            id: isFollowing.id
-          }
-        }).then(() => false);
-      }
-      return await ctx.prisma.user.update({
-        where: { id: ctx.session?.user?.id },
-        data: {
-          following: {
+  }),
+  follow: protectedProcedure
+  .input(z.string().cuid2())
+  .mutation(async ({ ctx, input }) => {
+    const isFollowing = await ctx.prisma.following.findFirst({
+      where: {
+        followingId: input,
+        userId: ctx.session?.user?.id
 
-            create: {
-              followingId: input,
-              
-            }
-          }
       }
-      }).then(() =>true)
-    }),      
+    });
+    if (isFollowing ) {
+      return await ctx.prisma.following.delete({
+        where: {
+          id: isFollowing.id
+        }
+      }).then(() => false);
+    }
+    return await ctx.prisma.user.update({
+      where: { id: ctx.session?.user?.id },
+      data: {
+        following: {
+
+          create: {
+            followingId: input,
+            
+          }
+        }
+    }
+    }).then(() =>true)
+  }),      
+
 
   ban: protectedProceduresWithRoles("ADMIN")
     .input(z.object({ user: z.string().cuid2() }))

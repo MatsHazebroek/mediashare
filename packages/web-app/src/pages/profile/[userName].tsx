@@ -118,53 +118,41 @@ const PageContent: NextPage = () => {
                     </div>
                   </div>
                   <div className="flex flex-grow items-center justify-end">
-                    {users.isSuccess && <EditProfileModal user={users.data} />}
+                    {session?.user.name != users.data?.username ? (
+                      <>
+                        <ProfileFollow
+                          hasFollowed={
+                            users.data?.followers.some(
+                              (follower) => follower.userId == session?.user.id
+                            ) || false
+                          }
+                          onClick={submit}
+                        />
+                        {users.isSuccess && (
+                          <EditProfileModal user={users.data} />
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {users.isSuccess && (
+                          <EditProfileModal user={users.data} />
+                        )}
+                      </>
+                    )}
+                    {session?.user.role == "ADMIN" ? (
+                      <>
+                        <DeleteProfile />
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
 
-                <div className="flex flex-grow items-center justify-end">
-                  {session?.user.name != users.data?.username ? (
-                    <>
-                      <ProfileFollow
-                        hasFollowed={
-                          users.data?.followers.some(
-                            (follower) => follower.userId == session?.user.id
-                          ) || false
-                        }
-                        onClick={submit}
-                      />
-                      {users.isSuccess && (
-                        <EditProfileModal user={users.data} />
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {users.isSuccess && (
-                        <EditProfileModal user={users.data} />
-                      )}
-                    </>
-                  )}
-                  {session?.user.role == "ADMIN" ? (
-                    <>
-                      <DeleteProfile />
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-              <div className="mt-10 flex justify-between">
-                <button className="flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none">
-                  Tweets
-                </button>
-                <button className="flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none">
-                  Media
-                </button>
-                <button className="flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none">
-                  Likes
-                </button>
 
-                <PostsOfUser userId={users.data?.id || ""} />
+                <div>
+                  <PostsOfUser userId={users.data?.id || ""} />
+                </div>
 
               </div>
             </div>

@@ -22,7 +22,9 @@ type props = {
 };
 
 export const Posts = (props: props) => {
-   const { data: session } = useSession();
+
+  const { data: session } = useSession();
+
   const posts = api.posts.getAll.useQuery({
     page: 0,
     howMany: 10,
@@ -30,14 +32,14 @@ export const Posts = (props: props) => {
     following: props.yourFollwing,
     postId: props.mainPostId,
   });
-  
+
   const postLikes = api.posts.like.useMutation({
     onSuccess: (data) => {
       if (data) toast.success("Geliked", { id: "goijwregoij" });
       if (!data) toast.success("Unliked", { id: "goijwregoij" });
     },
   });
-  
+
   const submit = (postId: string) => {
     postLikes.mutate({ post: postId });
   };
@@ -110,7 +112,9 @@ export const Posts = (props: props) => {
                 howManyLikes={post._count.Like}
               />
               {/* Verder af maken */}
-              <Comments hasCommented howManyComments={post._count.Comment} />
+
+              <Comments hasCommented />
+
               {session?.user.role === "ADMIN" ? (
                 <>
                   <DeleteModal
