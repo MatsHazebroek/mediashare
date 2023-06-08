@@ -5,6 +5,7 @@ import {
   createTRPCRouter,
   protectedProceduresWithRoles,
   publicProcedure,
+  protectedProcedure,
 } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
@@ -61,6 +62,11 @@ export const profileRouter = createTRPCRouter({
           description: true,
           image: true,
           status: true,
+          followers: {
+            where: {
+              userId: ctx.session?.user?.id,
+            }
+          },
           banner: true,
           link: true,
           _count: {
@@ -87,6 +93,37 @@ export const profileRouter = createTRPCRouter({
         });
       });
   }),
+  follow: protectedProcedure
+  .input(z.string().cuid2())
+  .mutation(async ({ ctx, input }) => {
+    const isFollowing = await ctx.prisma.following.findFirst({
+      where: {
+        followingId: input,
+        userId: ctx.session?.user?.id
+
+      }
+    });
+    if (isFollowing ) {
+      return await ctx.prisma.following.delete({
+        where: {
+          id: isFollowing.id
+        }
+      }).then(() => false);
+    }
+    return await ctx.prisma.user.update({
+      where: { id: ctx.session?.user?.id },
+      data: {
+        following: {
+
+          create: {
+            followingId: input,
+            
+          }
+        }
+    }
+    }).then(() =>true)
+  }),      
+
   ban: protectedProceduresWithRoles("ADMIN")
     .input(z.object({ user: z.string().cuid2() }))
     .mutation(

@@ -9,6 +9,9 @@ import { AiOutlineLink } from "react-icons/ai";
 import { BsCalendarDate } from "react-icons/bs";
 import { api } from "~/utils/api";
 import Link from "next/link";
+import DeleteProfile from "~/components/profile/deleteProfile";
+import ProfileFollow from "~/components/profile/profileFollow";
+import toast from "react-hot-toast";
 import { Posts } from "~/components/posts";
 import { useState } from "react";
 
@@ -17,8 +20,24 @@ type params = {
 };
 
 const PageContent: NextPage = () => {
+  const { data: session, status } = useSession();
   const params = useRouter().query as params;
   const users = api.profile.get.useQuery(params.userName);
+  const followers = api.profile.follow.useMutation({
+    onSuccess: (data) => {
+      if (data) toast.success("Gevolgd");
+      if (!data) toast.success("Ontvolgd");
+    },
+  });
+
+  const submit = () => {
+    followers.mutate(users.data?.id || "");
+  };
+  if (status == "authenticated") {
+    console.log(users.data?.followers);
+    console.log(session.user.id);
+  }
+
   return (
     <>
       <Head>
@@ -96,10 +115,40 @@ const PageContent: NextPage = () => {
                     </div>
                   </div>
                   <div className="flex flex-grow items-center justify-end">
-                    {users.isSuccess && <EditProfileModal user={users.data} />}
+                    {session?.user.name != users.data?.username ? (
+                      <>
+                        <ProfileFollow
+                          hasFollowed={
+                            users.data?.followers.some(
+                              (follower) => follower.userId == session?.user.id
+                            ) || false
+                          }
+                          onClick={submit}
+                        />
+                        {users.isSuccess && (
+                          <EditProfileModal user={users.data} />
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {users.isSuccess && (
+                          <EditProfileModal user={users.data} />
+                        )}
+                      </>
+                    )}
+                    {session?.user.role == "ADMIN" ? (
+                      <>
+                        <DeleteProfile />
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
-                <PostsOfUser userId={users.data?.id || ""} />
+
+                <div>
+                  <PostsOfUser userId={users.data?.id || ""} />
+                </div>
               </div>
             </div>
           )}

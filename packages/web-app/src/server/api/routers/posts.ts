@@ -38,7 +38,7 @@ export const postRouter = createTRPCRouter({
             select: {
               reply: {
                 select: {
-                  _count: { select: { Like: true } },
+                  _count: { select: { Like: true, Comment: true } },
                   id: true,
                   text: true,
                   image: true,
@@ -82,7 +82,7 @@ export const postRouter = createTRPCRouter({
         return await ctx.prisma.post.findMany({
           orderBy: { createdAt: "desc" },
           select: {
-            _count: { select: { Like: true } },
+            _count: { select: { Like: true, Comment: true } },
             id: true,
             text: true,
             image: true,
@@ -125,7 +125,7 @@ export const postRouter = createTRPCRouter({
       return await ctx.prisma.post.findMany({
         orderBy: { createdAt: "desc" },
         select: {
-          _count: { select: { Like: true } },
+          _count: { select: { Like: true, Comment: true } },
           id: true,
           text: true,
           image: true,
@@ -171,7 +171,7 @@ export const postRouter = createTRPCRouter({
             id: input.id,
           },
           select: {
-            _count: { select: { Like: true } },
+            _count: { select: { Like: true, Comment: true } },
             id: true,
             text: true,
             image: true,
