@@ -12,16 +12,13 @@ import Link from "next/link";
 import DeleteProfile from "~/components/profile/deleteProfile";
 import ProfileFollow from "~/components/profile/profileFollow";
 import toast from "react-hot-toast";
-import { Posts } from "~/components/posts";
-import { useState } from "react";
-
+import PostOfUser from "../../components/profile/postOfUser/postOfUser";
 
 type params = {
   userName: string;
 };
 
 const PageContent: NextPage = () => {
-
   const { data: session, status } = useSession();
   const params = useRouter().query as params;
   const users = api.profile.get.useQuery(params.userName);
@@ -149,11 +146,9 @@ const PageContent: NextPage = () => {
                   </div>
                 </div>
 
-
                 <div>
-                  <PostsOfUser userId={users.data?.id || ""} />
+                  <PostOfUser userId={users.data?.id || ""} />
                 </div>
-
               </div>
             </div>
           )}
@@ -164,45 +159,3 @@ const PageContent: NextPage = () => {
 };
 
 export default PageContent;
-type props = {
-  userId: string;
-};
-const PostsOfUser = (props: props) => {
-  const [whatPosts, setWhatPosts] = useState<"tweets" | "media" | "likes">(
-    "tweets"
-  );
-  return (
-    <>
-      <div className="mt-10 flex justify-between">
-        <button
-          onClick={() => setWhatPosts("tweets")}
-          className={
-            "flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none" +
-            (whatPosts == "tweets" ? " bg-gray-200 font-bold" : "")
-          }
-        >
-          Tweets
-        </button>
-        <button
-          onClick={() => setWhatPosts("media")}
-          className={
-            "flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none" +
-            (whatPosts == "media" ? " bg-gray-200 font-bold" : "")
-          }
-        >
-          Media
-        </button>
-        <button
-          onClick={() => setWhatPosts("likes")}
-          className={
-            "flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none" +
-            (whatPosts == "likes" ? " bg-gray-200 font-bold" : "")
-          }
-        >
-          Likes
-        </button>
-      </div>
-      <Posts user={{ id: props.userId, type: whatPosts }} />
-    </>
-  );
-};
