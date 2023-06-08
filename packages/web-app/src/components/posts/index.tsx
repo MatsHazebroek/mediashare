@@ -21,6 +21,10 @@ export const Posts = () => {
     },
   });
 
+  const submit = (postId: string) => {
+    postLikes.mutate({ post: postId });
+  };
+
   const deletePost = api.posts.delete.useMutation({
     onSuccess: (data) => {
       if (data) toast.success("Verwijderd");
@@ -33,10 +37,6 @@ export const Posts = () => {
 
   if (posts.isLoading) return <div>Loading...</div>;
   if (posts.isError) return <div>Error: {posts.error.message}</div>;
-
-  const submit = (postId: string) => {
-    postLikes.mutate({ post: postId });
-  };
 
   return (
     <>
