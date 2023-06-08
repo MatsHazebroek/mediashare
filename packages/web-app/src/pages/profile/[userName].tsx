@@ -104,13 +104,13 @@ const PageContent: NextPage = () => {
                         <span className="font-bold">
                           {users.data?._count.following}
                         </span>{" "}
-                        following
+                        Volgend
                       </span>
                       <span className="cursor-pointer text-black hover:underline">
                         <span className="font-bold">
                           {users.data?._count.followers}
                         </span>{" "}
-                        followers
+                        Volgers
                       </span>
                     </div>
                   </div>
