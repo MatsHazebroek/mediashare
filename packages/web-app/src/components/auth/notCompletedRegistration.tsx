@@ -2,6 +2,7 @@ import { useDebouncedState } from "@mantine/hooks";
 import * as Dialog from "@radix-ui/react-dialog";
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
@@ -24,6 +25,9 @@ export const NotCompletedRegistration = (props: props) => {
   }, [session, completedRegistration]);
   return (
     <>
+      <Head>
+        <title>Voltooi registratie</title>
+      </Head>
       <Dialog.Root
         open={completedRegistration == null ? false : completedRegistration}
       >
@@ -54,6 +58,7 @@ export const NotCompletedRegistration = (props: props) => {
     </>
   );
 };
+
 const Form = (props: { session: Session | null; onSuccess: () => void }) => {
   const [username, setUsername] = useDebouncedState<undefined | string>(
     undefined,
@@ -70,9 +75,11 @@ const Form = (props: { session: Session | null; onSuccess: () => void }) => {
       });
     },
     onMutate: () =>
-      toast.loading("Completing registration", { id: "complete-registration" }),
+      toast.loading("Voltooien van registratie", {
+        id: "complete-registration",
+      }),
     onSuccess: () => {
-      toast.success("Registration completed", {
+      toast.success("Registratie voltooid", {
         id: "complete-registration",
       });
       props.onSuccess();
@@ -80,7 +87,7 @@ const Form = (props: { session: Session | null; onSuccess: () => void }) => {
   });
   const submit = () => {
     if (!username)
-      return toast.error("Username is required", {
+      return toast.error("Gebruikersnaam is verplicht", {
         id: "complete-registration",
       });
     completeRegistration.mutate({
@@ -90,39 +97,47 @@ const Form = (props: { session: Session | null; onSuccess: () => void }) => {
   };
   return (
     <>
-      <h1 className="">Complete registration</h1>
-      <div>
+      <h1 className="text-xl font-semibold">Voltooi registratie</h1>
+      <div className="mb-4">
         <label
-          className="text-[15px] font-medium leading-[35px] text-black"
+          className="block text-lg font-medium text-black"
           htmlFor="firstName"
         >
-          ! Username:{" "}
+          <span className="text-red-500">!</span> Gebruikersnaam:
         </label>
         <input
-          className="selection:color-white inline-flex h-[35px] w-[200px] appearance-none items-center justify-center rounded-[4px] bg-blackA5 px-[10px] text-[15px] leading-none text-black shadow-[0_0_0_1px] shadow-blackA9 outline-none selection:bg-blackA9 focus:shadow-[0_0_0_2px_black]"
+          className="block w-64 rounded-md bg-blackA5 px-4 py-2 text-lg text-black shadow-sm outline-none focus:ring-2 focus:ring-blackA9"
           type="text"
           id="firstName"
           onInput={(e) => setUsername(e.currentTarget.value)}
           placeholder={props.session?.user.name ?? ""}
         />
       </div>
-      <div>
+      <div className="mb-4">
         <label
-          className="text-[15px] font-medium leading-[35px] text-black"
+          className="block text-lg font-medium text-black"
           htmlFor="firstName"
         >
-          Description of your account:{" "}
+          Beschrijving van uw account:
         </label>
         <textarea
-          className="selection:color-white inline-flex h-[35px] w-[200px] appearance-none items-center justify-center rounded-[4px] bg-blackA5 px-[10px] text-[15px] leading-none text-black shadow-[0_0_0_1px] shadow-blackA9 outline-none selection:bg-blackA9 focus:shadow-[0_0_0_2px_black]"
+          className="block w-64 rounded-md bg-blackA5 px-4 py-2 text-lg text-black shadow-sm outline-none focus:ring-2 focus:ring-blackA9"
           id="firstName"
           onInput={(e) => setDescription(e.currentTarget.value)}
-          placeholder={"I like to tweet about ..."}
+          placeholder="Ik tweet graag over..."
         />
       </div>
-      <p>All inputs with ! need to be filled in!</p>
+      <p className="mb-4">
+        Alle velden met <span className="text-red-500">!</span> ervoor moeten
+        worden ingevuld!
+      </p>
       <div>
-        <button onClick={() => submit()}>Complete registration</button>
+        <button
+          className="rounded-md bg-blue-500 px-4 py-2 text-lg font-semibold text-white shadow-sm hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
+          onClick={() => submit()}
+        >
+          Voltooi registratie
+        </button>
       </div>
     </>
   );
