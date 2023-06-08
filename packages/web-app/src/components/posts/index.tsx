@@ -8,7 +8,7 @@ import Auth from "../auth";
 import Like from "./likes";
 import Comments from "./comments";
 import { useSession } from "next-auth/react";
-import Delete from "./delete";
+import DeleteModal from "./deleteModal";
 
 export const Posts = () => {
   const { data: session } = useSession();
@@ -96,7 +96,7 @@ export const Posts = () => {
               <Comments hasCommented howManyComments={post._count.Comment} />
               {session?.user.role === "ADMIN" ? (
                 <>
-                  <Delete
+                  <DeleteModal
                     onClick={() => {
                       submitDelete(post.id);
                     }}
