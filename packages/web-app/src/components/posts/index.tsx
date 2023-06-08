@@ -2,6 +2,7 @@ import { api } from "~/utils/api";
 import Image from "next/image";
 import { timeSince } from "./formatTime";
 import { UserIcon } from "./userIcon";
+
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import Auth from "../auth";
@@ -10,17 +11,33 @@ import Comments from "./comments";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 
-export const Posts = () => {
-  const { data: session } = useSession();
-  const posts = api.posts.getAll.useQuery({});
 
+type props = {
+  user?: {
+    id: string;
+    type: "tweets" | "media" | "likes";
+  };
+  yourFollwing?: boolean;
+  mainPostId?: string;
+};
+
+export const Posts = (props: props) => {
+   const { data: session } = useSession();
+  const posts = api.posts.getAll.useQuery({
+    page: 0,
+    howMany: 10,
+    user: props.user,
+    following: props.yourFollwing,
+    postId: props.mainPostId,
+  });
+  
   const postLikes = api.posts.like.useMutation({
     onSuccess: (data) => {
       if (data) toast.success("Geliked", { id: "goijwregoij" });
       if (!data) toast.success("Unliked", { id: "goijwregoij" });
     },
   });
-
+  
   const submit = (postId: string) => {
     postLikes.mutate({ post: postId });
   };

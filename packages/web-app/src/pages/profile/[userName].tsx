@@ -12,12 +12,16 @@ import Link from "next/link";
 import DeleteProfile from "~/components/profile/deleteProfile";
 import ProfileFollow from "~/components/profile/profileFollow";
 import toast from "react-hot-toast";
+import { Posts } from "~/components/posts";
+import { useState } from "react";
+
 
 type params = {
   userName: string;
 };
 
 const PageContent: NextPage = () => {
+
   const { data: session, status } = useSession();
   const params = useRouter().query as params;
   const users = api.profile.get.useQuery(params.userName);
@@ -36,6 +40,7 @@ const PageContent: NextPage = () => {
     console.log(users.data?.followers);
     console.log(session.user.id);
   }
+
   return (
     <>
       <Head>
@@ -45,68 +50,78 @@ const PageContent: NextPage = () => {
       </Head>
       <main>
         <Sidebar>
-          <div className="overflow flex h-full w-full justify-center">
-            <div className="relative m-2 w-full max-w-[1546px] bg-white shadow-md">
-              <div className="flex h-1/3 max-h-[432px] items-start justify-center bg-slate-600">
-                <Image
-                  src={
-                    "https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  }
-                  alt={"Image"}
-                  width={1546}
-                  height={432}
-                  className={"max-h-full object-scale-down "}
-                />
-                {typeof session?.user.image == "string" ? (
-                  <Image
-                    src={session?.user.image}
-                    height={200}
-                    width={200}
-                    alt={"Foto"}
-                    className="absolute left-4 mt-64 h-32 w-32 rounded-full border-4 border-white bg-white"
-                  />
-                ) : null}
-              </div>
-              <div className="flex items-center">
-                <div className="ml-5 mt-16">
-                  <div className="text-2xl">{users.data?.username}</div>
-                  <div className="mt-2">
-                    {users.data?.status != null && users.data?.status}
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="flex items-center justify-center">
-                      <AiOutlineLink />
-                      <Link
-                        href="google.com"
-                        className="text-blue-500 hover:underline"
-                      >
-                        google.com
-                      </Link>
-                    </div>
+          {users.isError || users == null ? (
+            <></>
+          ) : (
+            <div className="overflow flex h-full w-full justify-center">
+              <div className="relative m-2 w-full max-w-[1546px] bg-white shadow-md">
+                <div className="flex h-1/3 max-h-[432px] items-start justify-center bg-slate-600">
+                  {typeof users.data?.banner == "string" && (
+                    <Image
+                      src={users.data?.banner}
+                      alt={"Image"}
+                      width={1546}
+                      height={432}
+                      className={"max-h-full object-scale-down "}
+                    />
+                  )}
 
-                    <div className="flex items-center justify-center gap-1">
-                      <BsCalendarDate />
-                      <span>
-                        {users.data?.createdAt != null &&
-                          users.data?.createdAt.toDateString()}
+                  {typeof users.data?.image == "string" ? (
+                    <Image
+                      src={users.data?.image}
+                      height={200}
+                      width={200}
+                      alt={"Foto"}
+                      className="absolute left-4 mt-64 h-32 w-32 rounded-full border-4 border-white bg-white"
+                    />
+                  ) : null}
+                </div>
+                <div className="flex items-center">
+                  <div className="ml-5 mt-16">
+                    <div className="text-2xl">{users.data?.username}</div>
+                    <div className="mt-2">
+                      {users.data?.status != null && users.data?.status}
+                    </div>
+                    <div className="flex gap-4">
+                      {typeof users.data?.link == "string" && (
+                        <div className="flex items-center justify-center">
+                          <AiOutlineLink />
+
+                          <Link
+                            href={users.data?.link}
+                            className="text-blue-500 hover:underline"
+                          >
+                            google.com
+                          </Link>
+                        </div>
+                      )}
+                      {users.data?.createdAt != null && (
+                        <div className="flex items-center justify-center gap-1">
+                          <BsCalendarDate />
+                          <span>{users.data?.createdAt.toDateString()}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-1xl flex gap-2">
+                      <span className="cursor-pointer text-black hover:underline">
+                        <span className="font-bold">
+                          {users.data?._count.following}
+                        </span>{" "}
+                        following
+                      </span>
+                      <span className="cursor-pointer text-black hover:underline">
+                        <span className="font-bold">
+                          {users.data?._count.followers}
+                        </span>{" "}
+                        followers
                       </span>
                     </div>
                   </div>
-                  <div className="text-1xl flex gap-2">
-                    <span className="cursor-pointer text-black hover:underline">
-                      <span className="font-bold">
-                        {users.data?._count.following}
-                      </span>{" "}
-                      following
-                    </span>
-                    <span className="cursor-pointer text-black hover:underline">
-                      <span className="font-bold">
-                        {users.data?._count.followers}
-                      </span>{" "}
-                      followers
-                    </span>
+                  <div className="flex flex-grow items-center justify-end">
+                    {users.isSuccess && <EditProfileModal user={users.data} />}
                   </div>
                 </div>
+
                 <div className="flex flex-grow items-center justify-end">
                   {session?.user.name != users.data?.username ? (
                     <>
@@ -148,9 +163,12 @@ const PageContent: NextPage = () => {
                 <button className="flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none">
                   Likes
                 </button>
+
+                <PostsOfUser userId={users.data?.id || ""} />
+
               </div>
             </div>
-          </div>
+          )}
         </Sidebar>
       </main>
     </>
@@ -158,3 +176,45 @@ const PageContent: NextPage = () => {
 };
 
 export default PageContent;
+type props = {
+  userId: string;
+};
+const PostsOfUser = (props: props) => {
+  const [whatPosts, setWhatPosts] = useState<"tweets" | "media" | "likes">(
+    "tweets"
+  );
+  return (
+    <>
+      <div className="mt-10 flex justify-between">
+        <button
+          onClick={() => setWhatPosts("tweets")}
+          className={
+            "flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none" +
+            (whatPosts == "tweets" ? " bg-gray-200 font-bold" : "")
+          }
+        >
+          Tweets
+        </button>
+        <button
+          onClick={() => setWhatPosts("media")}
+          className={
+            "flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none" +
+            (whatPosts == "media" ? " bg-gray-200 font-bold" : "")
+          }
+        >
+          Media
+        </button>
+        <button
+          onClick={() => setWhatPosts("likes")}
+          className={
+            "flex-1 px-5 py-4 text-center text-gray-500 transition-colors duration-200 hover:bg-gray-200 focus:outline-none" +
+            (whatPosts == "likes" ? " bg-gray-200 font-bold" : "")
+          }
+        >
+          Likes
+        </button>
+      </div>
+      <Posts user={{ id: props.userId, type: whatPosts }} />
+    </>
+  );
+};
