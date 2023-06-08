@@ -117,16 +117,23 @@ const PageContent: NextPage = () => {
                   <div className="flex flex-grow items-center justify-end">
                     {session?.user.name != users.data?.username ? (
                       <>
-                        <ProfileFollow
-                          hasFollowed={
-                            users.data?.followers.some(
-                              (follower) => follower.userId == session?.user.id
-                            ) || false
-                          }
-                          onClick={submit}
-                        />
-                        {users.isSuccess && (
-                          <EditProfileModal user={users.data} />
+                        {status == "authenticated" ? (
+                          <>
+                            <ProfileFollow
+                              hasFollowed={
+                                users.data?.followers.some(
+                                  (follower) =>
+                                    follower.userId == session?.user.id
+                                ) || false
+                              }
+                              onClick={submit}
+                            />
+                            {users.isSuccess && (
+                              <EditProfileModal user={users.data} />
+                            )}
+                          </>
+                        ) : (
+                          <></>
                         )}
                       </>
                     ) : (
