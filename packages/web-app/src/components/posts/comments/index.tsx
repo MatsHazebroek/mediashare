@@ -4,6 +4,7 @@ import CommentPage from "../../../pages/comment/[commentId]";
 
 const Comment = (props: {
   hasCommented: boolean;
+
   // howManyComments: number;
   onClick?: () => void;
 }) => {
@@ -11,6 +12,7 @@ const Comment = (props: {
   // const [howManyComments, setHowMannyComments] = useState(
   //   props.howManyComments
   // );
+
 
   return (
     <>
@@ -32,7 +34,9 @@ const Comment = (props: {
           </div>
         </button>
         <span className="flex items-center justify-center">
+
           {/* {howManyComments} */}
+
         </span>
       </div>
     </>

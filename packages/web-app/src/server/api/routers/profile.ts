@@ -91,6 +91,16 @@ export const profileRouter = createTRPCRouter({
           code: "NOT_FOUND",
           message: "User not found",
         });
+    }),
+    follow: protectedProcedure
+    .input(z.string().cuid2())
+    .mutation(async ({ ctx, input }) => {
+      const isFollowing = await ctx.prisma.following.findFirst({
+        where: {
+          followingId: input,
+          userId: ctx.session?.user?.id
+
+        }
       });
   }),
   follow: protectedProcedure
@@ -123,6 +133,7 @@ export const profileRouter = createTRPCRouter({
     }
     }).then(() =>true)
   }),      
+
 
   ban: protectedProceduresWithRoles("ADMIN")
     .input(z.object({ user: z.string().cuid2() }))

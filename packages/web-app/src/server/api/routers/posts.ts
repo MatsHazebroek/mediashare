@@ -34,6 +34,7 @@ export const postRouter = createTRPCRouter({
             where: {
               main: { User: { status: "ACTIVE" }, id: input.postId },
               reply: { User: { status: "ACTIVE" } },
+
             },
             select: {
               reply: {
@@ -184,6 +185,11 @@ export const postRouter = createTRPCRouter({
               where: {
                 userId: ctx.session?.user.id,
               },
+            },
+            Comment: {
+              include: {
+                reply: true
+              }
             },
             User: {
               select: {
@@ -347,7 +353,7 @@ export const postRouter = createTRPCRouter({
               message: "Post not found",
             });
           });
-        return true;
+        return false;
       }
       // if not liked, like
       await ctx.prisma.like

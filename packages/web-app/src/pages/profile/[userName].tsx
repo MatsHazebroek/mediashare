@@ -15,14 +15,17 @@ import toast from "react-hot-toast";
 import { Posts } from "~/components/posts";
 import { useState } from "react";
 
+
 type params = {
   userName: string;
 };
 
 const PageContent: NextPage = () => {
+
   const { data: session, status } = useSession();
   const params = useRouter().query as params;
   const users = api.profile.get.useQuery(params.userName);
+
   const followers = api.profile.follow.useMutation({
     onSuccess: (data) => {
       if (data) toast.success("Gevolgd");
@@ -146,9 +149,11 @@ const PageContent: NextPage = () => {
                   </div>
                 </div>
 
+
                 <div>
                   <PostsOfUser userId={users.data?.id || ""} />
                 </div>
+
               </div>
             </div>
           )}
