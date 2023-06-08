@@ -77,7 +77,8 @@ const PageContent: NextPage = () => {
                   <div className="ml-5 mt-16">
                     <div className="text-2xl">{users.data?.username}</div>
                     <div className="mt-2">
-                      {users.data?.status != null && users.data?.status}
+                      {users.data?.description != null &&
+                        users.data?.description}
                     </div>
                     <div className="flex gap-4">
                       {typeof users.data?.link == "string" && (
