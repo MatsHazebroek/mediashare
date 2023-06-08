@@ -80,7 +80,7 @@ const Index = () => {
             ) : null}
             <textarea
               className="mb-2 ml-2 max-h-80 w-[430px] rounded border p-1.5"
-              placeholder="What is happening?"
+              placeholder="Wat gebeurt er?"
               id="test"
               onInput={(e) => setMessage(e.currentTarget.value)}
             ></textarea>
