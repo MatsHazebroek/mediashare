@@ -8,6 +8,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { userPostsHandler } from "./handlers/userPosts";
+import { utapi } from "uploadthing/server";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -34,7 +35,6 @@ export const postRouter = createTRPCRouter({
             where: {
               main: { User: { status: "ACTIVE" }, id: input.postId },
               reply: { User: { status: "ACTIVE" } },
-
             },
             select: {
               reply: {
@@ -188,8 +188,8 @@ export const postRouter = createTRPCRouter({
             },
             Comment: {
               include: {
-                reply: true
-              }
+                reply: true,
+              },
             },
             User: {
               select: {
@@ -279,17 +279,26 @@ export const postRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ post: z.string().cuid2() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.post
+      const post = await ctx.prisma.post
         .findFirstOrThrow({
-          where: { id: input.post, userId: ctx.session.user.id },
+          where: { id: input.post },
         })
-        .catch(() => {
-          if (ctx.session.user.role !== "ADMIN")
+        .then((post) => {
+          if (
+            ctx.session.user.role !== "ADMIN" &&
+            post.userId !== ctx.session.user.id
+          )
             throw new TRPCError({
               code: "BAD_REQUEST",
               message: "Post not found",
             });
+          return post;
         });
+      if (post.image) {
+        const imageId = post.image.split("/")[post.image.split("/").length - 1];
+        if (imageId && imageId.includes("."))
+          utapi.deleteFiles(imageId).catch(console.log);
+      }
       return await ctx.prisma.post.delete({
         where: {
           id: input.post,

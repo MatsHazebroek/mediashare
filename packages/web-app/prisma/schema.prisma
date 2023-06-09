@@ -20,7 +20,7 @@ model Post {
     createdAt DateTime @default(now())
     updatedAt DateTime @default(now())
     Like      Like[]
-    User      User     @relation(fields: [userId], references: [id])
+    User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String
 
     Comment Comment[] @relation("main")
@@ -31,9 +31,9 @@ model Post {
 
 model Like {
     id     String   @id @default(cuid())
-    post   Post     @relation(fields: [postId], references: [id])
+    post   Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
     postId String
-    user   User     @relation(fields: [userId], references: [id])
+    user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String
     date   DateTime @default(now())
 
@@ -44,10 +44,10 @@ model Like {
 model Comment {
     id String @id @default(cuid())
 
-    main   Post   @relation("main", fields: [mainId], references: [id])
+    main   Post   @relation("main", fields: [mainId], references: [id], onDelete: Cascade)
     mainId String
 
-    reply   Post   @relation("reply", fields: [replyId], references: [id])
+    reply   Post   @relation("reply", fields: [replyId], references: [id], onDelete: Cascade)
     replyId String
 
     @@index([mainId])
