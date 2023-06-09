@@ -7,8 +7,8 @@ import { api } from "~/utils/api";
 import { timeSince } from "../../components/posts/formatTime";
 import Image from "next/image";
 import Auth from "~/components/auth";
-import Like from "~/components/posts/likes";
-import Comments from "~/components/posts/comments";
+import Like from "~/components/posts/likesCount";
+import Comments from "~/components/posts/commentsCount";
 
 type params = {
   commentId: string;

@@ -5,14 +5,13 @@ import CommentPage from "../../../pages/comment/[commentId]";
 const Comment = (props: {
   hasCommented: boolean;
 
-  // howManyComments: number;
+  howManyComments: number;
   onClick?: () => void;
 }) => {
   const [hasComment, setHasComment] = useState(props.hasCommented);
-  // const [howManyComments, setHowMannyComments] = useState(
-  //   props.howManyComments
-  // );
-
+  const [howManyComments, setHowMannyComments] = useState(
+    props.howManyComments
+  );
 
   return (
     <>
@@ -23,10 +22,10 @@ const Comment = (props: {
           onClick={() => {
             <CommentPage />;
 
-            // if (hasComment) setHowMannyComments(howManyComments - 1);
-            // if (!hasComment) setHowMannyComments(howManyComments + 1);
-            // setHasComment(!hasComment);
-            // if (props.onClick) props.onClick();
+            if (hasComment) setHowMannyComments(howManyComments - 1);
+            if (!hasComment) setHowMannyComments(howManyComments + 1);
+            setHasComment(!hasComment);
+            if (props.onClick) props.onClick();
           }}
         >
           <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-blue-200">
@@ -34,9 +33,7 @@ const Comment = (props: {
           </div>
         </button>
         <span className="flex items-center justify-center">
-
-          {/* {howManyComments} */}
-
+          {howManyComments}
         </span>
       </div>
     </>

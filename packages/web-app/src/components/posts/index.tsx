@@ -6,8 +6,8 @@ import { UserIcon } from "./userIcon";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import Auth from "../auth";
-import Like from "./likes";
-import Comments from "./comments";
+import Like from "./likesCount";
+import Comments from "./commentsCount";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 
@@ -132,7 +132,7 @@ export const Posts = (props: props) => {
                 howManyLikes={post._count.Like}
               />
 
-              <Comments hasCommented />
+              <Comments hasCommented howManyComments={post._count.Like} />
 
               {session?.user.role === "ADMIN" ? (
                 <div className="mt-1 flex gap-1">
