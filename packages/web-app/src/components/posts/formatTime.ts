@@ -17,7 +17,7 @@ export const timeSince = (date: Date): string => {
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return Math.floor(interval).toString() + " uren geleden";
+    return Math.floor(interval).toString() + " uur geleden";
   }
   interval = seconds / 60;
   if (interval > 1) {

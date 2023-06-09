@@ -2,7 +2,6 @@ import { useDebouncedState } from "@mantine/hooks";
 import * as Dialog from "@radix-ui/react-dialog";
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import Head from "next/head";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { api } from "~/utils/api";
@@ -25,9 +24,6 @@ export const NotCompletedRegistration = (props: props) => {
   }, [session, completedRegistration]);
   return (
     <>
-      <Head>
-        <title>Voltooi registratie</title>
-      </Head>
       <Dialog.Root
         open={completedRegistration == null ? false : completedRegistration}
       >
