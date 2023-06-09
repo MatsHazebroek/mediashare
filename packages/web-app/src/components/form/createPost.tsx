@@ -69,7 +69,7 @@ export const CreatePost = () => {
         ) : null}
         <textarea
           className="mb-2 ml-6 w-full rounded border p-1.5"
-          placeholder="What is happening?"
+          placeholder="Wat gebeurt er?"
           ref={textArea}
           onInput={(e) => setMessage(e.currentTarget.value)}
           disabled={createPost.isLoading}

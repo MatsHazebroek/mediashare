@@ -6,14 +6,9 @@ import { AiOutlineDelete } from "react-icons/ai";
 const DialogDemo = (props: { onClick?: () => void }) => (
   <Dialog.Root>
     <Dialog.Trigger asChild>
-      <button
-        className="flex items-center justify-center focus:outline-none"
-        title="Delete"
-      >
-        <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-red-400">
-          <AiOutlineDelete />
-        </div>
-      </button>
+      <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-red-400">
+        <AiOutlineDelete />
+      </div>
     </Dialog.Trigger>
     <Dialog.Portal>
       <Dialog.Overlay className="fixed inset-0 bg-blackA9 data-[state=open]:animate-overlayShow" />

@@ -13,15 +13,15 @@ export const timeSince = (date: Date): string => {
   }
   interval = seconds / 86400;
   if (interval > 1) {
-    return Math.floor(interval).toString() + " days ago";
+    return Math.floor(interval).toString() + " dagen geleden";
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    return Math.floor(interval).toString() + " hours ago";
+    return Math.floor(interval).toString() + " uren geleden";
   }
   interval = seconds / 60;
   if (interval > 1) {
-    return Math.floor(interval).toString() + " minutes ago";
+    return Math.floor(interval).toString() + " minuten geleden";
   }
-  return Math.floor(seconds).toString() + " seconds ago";
+  return Math.floor(seconds).toString() + " seconden geleden";
 };

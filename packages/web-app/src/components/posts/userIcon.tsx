@@ -65,7 +65,7 @@ export const UserIcon = (props: props) => {
                     {props.User.following}
                   </div>{" "}
                   <div className="m-0 text-[15px] leading-[1.5] text-mauve10">
-                    Following
+                    Volgend
                   </div>
                 </div>
                 <div className="flex gap-[5px]">
@@ -73,7 +73,7 @@ export const UserIcon = (props: props) => {
                     {props.User.followers}
                   </div>{" "}
                   <div className="m-0 text-[15px] leading-[1.5] text-mauve10">
-                    Followers
+                    Volgers
                   </div>
                 </div>
               </div>

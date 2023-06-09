@@ -77,7 +77,8 @@ const PageContent: NextPage = () => {
                   <div className="ml-5 mt-16">
                     <div className="text-2xl">{users.data?.username}</div>
                     <div className="mt-2">
-                      {users.data?.status != null && users.data?.status}
+                      {users.data?.description != null &&
+                        users.data?.description}
                     </div>
                     <div className="flex gap-4">
                       {typeof users.data?.link == "string" && (
@@ -104,29 +105,36 @@ const PageContent: NextPage = () => {
                         <span className="font-bold">
                           {users.data?._count.following}
                         </span>{" "}
-                        following
+                        Volgend
                       </span>
                       <span className="cursor-pointer text-black hover:underline">
                         <span className="font-bold">
                           {users.data?._count.followers}
                         </span>{" "}
-                        followers
+                        Volgers
                       </span>
                     </div>
                   </div>
                   <div className="flex flex-grow items-center justify-end">
                     {session?.user.name != users.data?.username ? (
                       <>
-                        <ProfileFollow
-                          hasFollowed={
-                            users.data?.followers.some(
-                              (follower) => follower.userId == session?.user.id
-                            ) || false
-                          }
-                          onClick={submit}
-                        />
-                        {users.isSuccess && (
-                          <EditProfileModal user={users.data} />
+                        {status == "authenticated" ? (
+                          <>
+                            <ProfileFollow
+                              hasFollowed={
+                                users.data?.followers.some(
+                                  (follower) =>
+                                    follower.userId == session?.user.id
+                                ) || false
+                              }
+                              onClick={submit}
+                            />
+                            {users.isSuccess && (
+                              <EditProfileModal user={users.data} />
+                            )}
+                          </>
+                        ) : (
+                          <></>
                         )}
                       </>
                     ) : (
