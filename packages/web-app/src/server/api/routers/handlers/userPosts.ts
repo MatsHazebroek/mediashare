@@ -25,7 +25,7 @@ export const userPostsHandler = async (
         select: {
           post: {
             select: {
-              _count: { select: { Like: true } },
+              _count: { select: { Like: true, Comment: true } },
               id: true,
               text: true,
               image: true,
@@ -62,7 +62,7 @@ export const userPostsHandler = async (
     return await ctx.prisma.post.findMany({
       orderBy: { createdAt: "desc" },
       select: {
-        _count: { select: { Like: true } },
+        _count: { select: { Like: true, Comment: true } },
         id: true,
         text: true,
         image: true,
@@ -101,7 +101,7 @@ export const userPostsHandler = async (
   return await ctx.prisma.post.findMany({
     orderBy: { createdAt: "desc" },
     select: {
-      _count: { select: { Like: true } },
+      _count: { select: { Like: true, Comment: true } },
       id: true,
       text: true,
       image: true,

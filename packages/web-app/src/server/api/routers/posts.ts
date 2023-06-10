@@ -186,11 +186,6 @@ export const postRouter = createTRPCRouter({
                 userId: ctx.session?.user.id,
               },
             },
-            Comment: {
-              include: {
-                reply: true,
-              },
-            },
             User: {
               select: {
                 _count: { select: { followers: true, following: true } },
@@ -319,22 +314,13 @@ export const postRouter = createTRPCRouter({
           userId: ctx.session.user.id,
         },
       });
-      return await ctx.prisma.comment
-        .create({
-          data: {
-            mainId: input.post,
-            replyId: post.id,
-          },
-        })
-        .then(() => {
-          return true;
-        })
-        .catch(() => {
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Post not found",
-          });
-        });
+      await ctx.prisma.comment.create({
+        data: {
+          mainId: input.post,
+          replyId: post.id,
+        },
+      });
+      return post;
     }),
   like: protectedProcedure
     .input(

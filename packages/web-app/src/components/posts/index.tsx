@@ -7,7 +7,7 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 import Auth from "../auth";
 import Like from "./likesCount";
-import Comments from "./commentsCount";
+import Comments from "./commentModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 
@@ -33,8 +33,8 @@ export const Posts = (props: props) => {
 
   const postLikes = api.posts.like.useMutation({
     onSuccess: (data) => {
-      if (data) toast.success("Geliked", { id: "goijwregoij" });
-      if (!data) toast.success("Unliked", { id: "goijwregoij" });
+      if (data) toast.success("Geliked", { id: "likeToast" });
+      if (!data) toast.success("Unliked", { id: "likeToast" });
     },
   });
 
@@ -78,7 +78,7 @@ export const Posts = (props: props) => {
   if (posts.isError) return <div>Error: {posts.error.message}</div>;
 
   return (
-    <>
+    <div className="m-2 bg-white">
       {posts.data.map((post) => (
         <div
           key={post.id + "post"}
@@ -132,7 +132,10 @@ export const Posts = (props: props) => {
                 howManyLikes={post._count.Like}
               />
 
-              <Comments hasCommented howManyComments={post._count.Like} />
+              <Comments
+                postId={post.id}
+                howManyComments={post._count.Comment as number}
+              />
 
               {session?.user.role === "ADMIN" ? (
                 <div className="mt-1 flex gap-1">
@@ -154,6 +157,6 @@ export const Posts = (props: props) => {
           </Auth>
         </div>
       ))}
-    </>
+    </div>
   );
 };
