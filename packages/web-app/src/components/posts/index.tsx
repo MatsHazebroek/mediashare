@@ -134,7 +134,7 @@ export const Posts = (props: props) => {
 
               <Comments
                 postId={post.id}
-                howManyComments={post._count.Comment as number}
+                howManyComments={post._count.Comment}
               />
 
               {session?.user.role === "ADMIN" ? (

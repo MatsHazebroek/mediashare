@@ -3,6 +3,9 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import InputField from "../input/index";
 import { TbCameraPlus } from "react-icons/tb";
+import { UploadButton } from "@uploadthing/react";
+import { OurFileRouter } from "~/server/uploadthing";
+import toast from "react-hot-toast";
 
 type props = {
   user: {
@@ -37,7 +40,7 @@ const DialogDemo = (props: props) => {
 
           <div className="relative mb-4">
             <div className="relative">
-              <label htmlFor="banner-upload" className="cursor-pointer ">
+              <label className="cursor-pointer ">
                 <Image
                   src={
                     "https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg?auto=compress&cs=tinysrgb&w=1600"
@@ -51,38 +54,42 @@ const DialogDemo = (props: props) => {
                   <TbCameraPlus className="h-6 w-6 rounded-full text-white" />
                 </div>
               </label>
-              <input
-                type="file"
-                id="banner-upload"
-                accept="image/*"
-                className="hidden "
-              />
-
-              <div className="absolute left-4 -translate-y-1/2 transform rounded-full border-4 border-white bg-white">
-                <label
-                  htmlFor="profile-image-upload"
-                  className="cursor-pointer"
-                >
-                  <div className="relative">
-                    <Image
-                      src={props.user.image || ""} // Provide a default profile image path
-                      alt="Profile"
-                      className="h-16 w-16 rounded-full"
-                      width={40}
-                      height={40}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center rounded-full bg-slate-800 opacity-30">
-                      <TbCameraPlus className="h-6 w-6 rounded-full text-white" />
-                    </div>
+              <UploadButton<OurFileRouter>
+                endpoint="userImageUploader"
+                onClientUploadComplete={() => {
+                  // Do something with the response
+                  toast.success("Post created!", {
+                    id: "createPost",
+                    duration: 2000,
+                  });
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  toast.error("Error creating post: " + error.message, {
+                    id: "createPost",
+                    duration: 2000,
+                  });
+                }}
+              >
+                {() => (
+                  <div className="absolute left-4 -translate-y-1/2 transform rounded-full border-4 border-white bg-white">
+                    <label className="cursor-pointer">
+                      <div className="relative">
+                        <Image
+                          src={props.user.image || ""} // Provide a default profile image path
+                          alt="Profile"
+                          className="h-16 w-16 rounded-full"
+                          width={40}
+                          height={40}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center rounded-full bg-slate-800 opacity-30">
+                          <TbCameraPlus className="h-6 w-6 rounded-full text-white" />
+                        </div>
+                      </div>
+                    </label>
                   </div>
-                </label>
-                <input
-                  type="file"
-                  id="profile-image-upload"
-                  accept="image/*"
-                  className="hidden"
-                />
-              </div>
+                )}
+              </UploadButton>
             </div>
           </div>
 

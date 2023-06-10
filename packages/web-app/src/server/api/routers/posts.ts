@@ -290,8 +290,9 @@ export const postRouter = createTRPCRouter({
           return post;
         });
       if (post.image) {
+        const url = new URL(post.image);
         const imageId = post.image.split("/")[post.image.split("/").length - 1];
-        if (imageId && imageId.includes("."))
+        if (imageId && imageId.includes(".") && url.host == "uploadthing.com")
           utapi.deleteFiles(imageId).catch(console.log);
       }
       return await ctx.prisma.post.delete({

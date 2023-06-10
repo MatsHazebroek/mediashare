@@ -31,8 +31,9 @@ export const ourFileRouter = {
         throw new Error("Not your post", { cause: "Not your post" });
       // Delete the old image
       if (post.image) {
+        const url = new URL(post.image);
         const imageId = post.image.split("/")[post.image.split("/").length - 1];
-        if (imageId && imageId.includes("."))
+        if (imageId && imageId.includes(".") && url.host === "uploadthing.com")
           utapi.deleteFiles(imageId).catch(console.log);
       }
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
@@ -55,9 +56,14 @@ export const ourFileRouter = {
         where: { id: session.user.id },
       });
       if (user.banner) {
+        const url = new URL(user.banner);
         const bannerId =
           user.banner.split("/")[user.banner.split("/").length - 1];
-        if (bannerId && bannerId.includes("."))
+        if (
+          bannerId &&
+          bannerId.includes(".") &&
+          url.host === "uploadthing.com"
+        )
           utapi.deleteFiles(bannerId).catch(console.log);
       }
       return { session: session };
@@ -72,6 +78,7 @@ export const ourFileRouter = {
     }),
   userImageUploader: f({ image: { maxFileCount: 1, maxFileSize: "128MB" } })
     .middleware(async (req, res) => {
+      console.log("efwij");
       const session = await getServerAuthSession({ req, res });
       if (!session || !session.user)
         throw new Error("Not logged in", { cause: "Not logged in" });
@@ -79,8 +86,9 @@ export const ourFileRouter = {
         where: { id: session.user.id },
       });
       if (user.image) {
+        const url = new URL(user.image);
         const imageId = user.image.split("/")[user.image.split("/").length - 1];
-        if (imageId && imageId.includes("."))
+        if (imageId && url.host === "uploadthing.com")
           utapi.deleteFiles(imageId).catch(console.log);
       }
       return { session: session };
