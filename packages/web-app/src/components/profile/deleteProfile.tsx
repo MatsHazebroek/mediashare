@@ -6,7 +6,7 @@ function deleteProfile() {
     <>
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <button className="mr-4 mt-12 rounded-3xl border bg-red-500 px-4 py-2 font-bold text-black">
+          <button className="mr-4 mt-2 rounded-full border bg-red-500 px-4 py-2 font-bold text-black">
             Verwijder Profiel
           </button>
         </Dialog.Trigger>

@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import { NotCompletedRegistration } from "~/components/auth/notCompletedRegistration";
+import Sidebar from "~/components/sidebar";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -16,7 +17,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <Toaster />
       <NotCompletedRegistration>
-        <Component {...pageProps} />
+        <Sidebar>
+          <Component {...pageProps} />
+          <div className="h-10 w-full lg:h-0"></div>
+        </Sidebar>
       </NotCompletedRegistration>
     </SessionProvider>
   );

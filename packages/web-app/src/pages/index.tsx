@@ -13,17 +13,15 @@ const PageContent: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Sidebar>
-          <div className="m-2 bg-white p-4 shadow-md">
-            <Auth>
-              <CreatePost />
-            </Auth>
+        <div className="m-2 bg-white p-4 shadow-md">
+          <Auth>
+            <CreatePost />
+          </Auth>
 
-            <div className="mt-4 border-t border-gray-200 pt-4">
-              <Posts />
-            </div>
+          <div className="mt-4 border-t border-gray-200 pt-4">
+            <Posts />
           </div>
-        </Sidebar>
+        </div>
       </main>
     </>
   );

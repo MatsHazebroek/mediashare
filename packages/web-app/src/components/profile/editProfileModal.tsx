@@ -88,7 +88,7 @@ const EditProfileModal = (props: props) => {
   return (
     <Dialog.Root open={open} onOpenChange={() => setOpen(!open)}>
       <Dialog.Trigger asChild>
-        <button className="mr-4 mt-12 rounded-3xl border px-4 py-2 font-bold text-black transition-colors duration-200 hover:bg-gray-200">
+        <button className="mr-4 mt-2 rounded-full border px-4 py-2 font-bold text-black transition-colors duration-200 hover:bg-gray-200">
           Wijzig profiel
         </button>
       </Dialog.Trigger>

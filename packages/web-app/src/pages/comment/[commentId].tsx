@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Posts } from "~/components/posts";
 import { MainPost } from "~/components/comment";
-import Sidebar from "~/components/sidebar";
+
 import { api } from "~/utils/api";
 import { CreateComent } from "~/components/form/createComment";
 
@@ -22,21 +22,19 @@ function Comment() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Sidebar>
-          {!post.isSuccess ? (
-            <p>Loading...</p>
-          ) : (
-            <>
-              <MainPost post={post.data} />
+        {!post.isSuccess ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <MainPost post={post.data} />
 
-              <CreateComent
-                howManyComments={post.data._count.Comment}
-                postId={post.data.id}
-              />
-              <Posts mainPostId={post.data.id}></Posts>
-            </>
-          )}
-        </Sidebar>
+            <CreateComent
+              howManyComments={post.data._count.Comment}
+              postId={post.data.id}
+            />
+            <Posts mainPostId={post.data.id}></Posts>
+          </>
+        )}
       </main>
     </>
   );

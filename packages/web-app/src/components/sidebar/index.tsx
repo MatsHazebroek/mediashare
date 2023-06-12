@@ -6,6 +6,13 @@ import Modal from "../form/tweetButtonModal";
 import DropDownMenu from "../dropdownmenu";
 import Link from "next/link";
 
+import {
+  RiHome3Line,
+  RiUserLine,
+  RiLoginCircleLine,
+  RiLogoutCircleLine,
+} from "react-icons/ri";
+
 type props = {
   children: React.ReactNode;
 };
@@ -43,17 +50,6 @@ const Index = (props: props) => {
                   <span className="text-lg font-medium">Home</span>
                 </Link>
               </li>
-              {/* <li>
-              <a
-                href="#"
-                className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
-                  <i className="bx bx-chat"></i>
-                </span>
-                <span className="text-lg font-medium">Chat</span>
-              </a>
-            </li> */}
               <Auth>
                 <li>
                   <Link
@@ -79,20 +75,6 @@ const Index = (props: props) => {
                   </Link>
                 </li>
               </Auth>
-              {/* <li>
-              <a
-                href="#"
-                className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
-                  <i className="bx bx-bell"></i>
-                </span>
-                <span className="text-lg font-medium">Notifications</span>
-                <span className="ml-auto mr-auto rounded-full bg-red-100 px-3 py-px text-sm text-red-500">
-                  5
-                </span>
-              </a>
-            </li> */}
             </ul>
             <div className="mt-auto">
               <ul className="flex flex-col">
@@ -155,18 +137,6 @@ const Index = (props: props) => {
                         href="#"
                         className="mx-auto mb-12 flex transform flex-row items-center justify-center rounded px-1 py-1 text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                       >
-                        {/* <span
-                          className="text-lg font-medium"
-                          onClick={() => {
-                            void (async () => {
-                              await signOut().catch(() => {
-                                return;
-                              });
-                            })();
-                          }}
-                        >
-                        </span> */}
-
                         <DropDownMenu></DropDownMenu>
                       </Link>
                     </div>
@@ -178,31 +148,37 @@ const Index = (props: props) => {
         </div>
 
         <div className="fixed bottom-0 left-0 z-50 h-16 w-full border-t border-gray-200 bg-white lg:hidden">
-          <div className="mx-auto grid h-full max-w-lg grid-cols-4 font-medium">
-            <button
+          <div className="mx-auto flex h-full max-w-lg items-center justify-center font-medium">
+            <Link
               type="button"
-              className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50"
+              className="group flex flex-col items-center justify-center px-3 hover:bg-gray-50"
+              href={"/"}
             >
-              <span className="text-sm text-gray-500 group-hover:text-blue-600">
-                Home
-              </span>
-            </button>
+              <div className="ml-4">
+                <RiHome3Line
+                  size={18}
+                  className="text-gray-500 group-hover:text-blue-600"
+                />
+              </div>
+            </Link>
             <Auth>
-              <button
+              <Link
                 type="button"
-                className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50"
+                className="group flex flex-col items-center justify-center px-3 hover:bg-gray-50"
+                href={"/profile/" + (session?.user.name || "")}
               >
-                <span className="text-sm text-gray-500 group-hover:text-blue-600">
-                  Profiel
-                </span>
-              </button>
+                <RiUserLine
+                  size={18}
+                  className="text-gray-500 group-hover:text-blue-600"
+                />
+              </Link>
             </Auth>
 
             {status === "unauthenticated" ? (
               <>
                 <button
                   type="button"
-                  className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50"
+                  className="group flex flex-col items-center justify-center px-3 hover:bg-gray-50"
                 >
                   <span
                     className="text-sm text-gray-500 group-hover:text-blue-600"
@@ -217,7 +193,10 @@ const Index = (props: props) => {
                       })();
                     }}
                   >
-                    Inloggen
+                    <RiLoginCircleLine
+                      size={18}
+                      className="text-gray-500 group-hover:text-blue-600"
+                    />
                   </span>
                 </button>
               </>
@@ -225,7 +204,7 @@ const Index = (props: props) => {
               <>
                 <button
                   type="button"
-                  className="group inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50"
+                  className="group flex flex-col items-center justify-center px-5 hover:bg-gray-50"
                 >
                   <span
                     className="text-sm text-gray-500 group-hover:text-blue-600"
@@ -237,11 +216,14 @@ const Index = (props: props) => {
                       })();
                     }}
                   >
-                    Uitloggen
+                    <RiLogoutCircleLine
+                      size={18}
+                      className="text-gray-500 group-hover:text-blue-600"
+                    />
                   </span>
                 </button>
-                <div className="group ml-auto inline-flex flex-col items-center justify-center px-5">
-                  <Modal />
+                <div className="group ml-auto flex flex-col items-center justify-center px-5">
+                  <Modal></Modal>
                 </div>
               </>
             )}
