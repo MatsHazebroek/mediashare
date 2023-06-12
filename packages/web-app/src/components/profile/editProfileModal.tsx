@@ -4,8 +4,14 @@ import Image from "next/image";
 import InputField from "../input/index";
 import { TbCameraPlus } from "react-icons/tb";
 import { UploadButton } from "@uploadthing/react";
-import { OurFileRouter } from "~/server/uploadthing";
+import type { OurFileRouter } from "~/server/uploadthing";
 import toast from "react-hot-toast";
+import { useRef, useState } from "react";
+import { useDebouncedState } from "@mantine/hooks";
+import { api } from "~/utils/api";
+import { set } from "zod";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 type props = {
   user: {
@@ -19,13 +25,69 @@ type props = {
     };
     createdAt: Date;
     username: string | null;
+    link: string | null;
     description: string | null;
   };
 };
 
-const DialogDemo = (props: props) => {
+const EditProfileModal = (props: props) => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [username, setUsername] = useDebouncedState<string | null>(null, 500);
+  const [description, setDescription] = useDebouncedState<string | null>(
+    props.user.description,
+    500
+  );
+  const [link, setLink] = useDebouncedState<string | null>(
+    props.user.link,
+    500
+  );
+  const startUserImageUpload = useRef<(() => void) | null>(null);
+  const startBannerImageUpload = useRef<(() => void) | null>(null);
+  const updateProfile = api.profile.update.useMutation({
+    onSuccess: async (data) => {
+      toast.success("Successfully edited profile", {
+        id: "updateProfile",
+        duration: 2000,
+      });
+      setOpen(false);
+      if (props.user.username !== data.username && data.username)
+        await router.push(`/profile/${data.username}`);
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        id: "updateProfile",
+        duration: 2000,
+      });
+    },
+    onMutate: () => {
+      toast.loading("Updating profile", {
+        id: "updateProfile",
+      });
+    },
+  });
+  const save = () => {
+    if (
+      props.user.username !== username ||
+      props.user.description !== description ||
+      props.user.link !== link
+    )
+      updateProfile.mutate({
+        user: session?.user.id !== props.user.id ? props.user.id : undefined,
+        username:
+          username && props.user.username !== username ? username : undefined,
+        description:
+          description && props.user.description !== description
+            ? description
+            : undefined,
+        link: link && props.user.link !== link ? link : undefined,
+      });
+    if (startBannerImageUpload.current) startBannerImageUpload.current();
+    if (startUserImageUpload.current) startUserImageUpload.current();
+  };
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={() => setOpen(!open)}>
       <Dialog.Trigger asChild>
         <button className="mr-4 mt-12 rounded-3xl border px-4 py-2 font-bold text-black transition-colors duration-200 hover:bg-gray-200">
           Wijzig profiel
@@ -40,36 +102,63 @@ const DialogDemo = (props: props) => {
 
           <div className="relative mb-4">
             <div className="relative">
-              <label className="cursor-pointer ">
-                <Image
-                  src={
-                    "https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                  }
-                  alt="Banner"
-                  className="h-40 w-full rounded object-cover "
-                  width={100}
-                  height={100}
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-800 opacity-30">
-                  <TbCameraPlus className="h-6 w-6 rounded-full text-white" />
-                </div>
-              </label>
               <UploadButton<OurFileRouter>
-                endpoint="userImageUploader"
+                endpoint="bannerUploader"
                 onClientUploadComplete={() => {
                   // Do something with the response
-                  toast.success("Post created!", {
-                    id: "createPost",
+                  toast.success("Successfully edited banner", {
+                    id: "bannerUploader",
                     duration: 2000,
                   });
                 }}
                 onUploadError={(error: Error) => {
                   // Do something with the error.
-                  toast.error("Error creating post: " + error.message, {
-                    id: "createPost",
+                  toast.error("Error editing banner: " + error.message, {
+                    id: "bannerUploader",
                     duration: 2000,
                   });
                 }}
+                startUpload={(start) =>
+                  (startBannerImageUpload.current = start)
+                }
+              >
+                {() => (
+                  <label className="cursor-pointer ">
+                    <Image
+                      src={
+                        "https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg?auto=compress&cs=tinysrgb&w=1600"
+                      }
+                      alt="Banner"
+                      className="h-40 w-full rounded object-cover "
+                      width={100}
+                      height={100}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-slate-800 opacity-30">
+                      <TbCameraPlus className="h-6 w-6 rounded-full text-white" />
+                    </div>
+                  </label>
+                )}
+              </UploadButton>
+              <UploadButton<OurFileRouter>
+                endpoint="userImageUploader"
+                onClientUploadComplete={() => {
+                  // Do something with the response
+                  toast.success("Successfully edited profile image", {
+                    id: "userImageUploader",
+                    duration: 2000,
+                  });
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  toast.error(
+                    "Error creating profile image: " + error.message,
+                    {
+                      id: "userImageUploader",
+                      duration: 2000,
+                    }
+                  );
+                }}
+                startUpload={(start) => (startUserImageUpload.current = start)}
               >
                 {() => (
                   <div className="absolute left-4 -translate-y-1/2 transform rounded-full border-4 border-white bg-white">
@@ -100,6 +189,7 @@ const DialogDemo = (props: props) => {
               maxLength={50}
               errorMessage="Dit mag niet leeg zijn"
               isRequired={true}
+              onInput={(e) => setUsername(e)}
             />
 
             <InputField
@@ -108,6 +198,7 @@ const DialogDemo = (props: props) => {
               maxLength={160}
               errorMessage={""}
               isRequired={false}
+              onInput={(e) => setDescription(e)}
             />
 
             <InputField
@@ -116,15 +207,17 @@ const DialogDemo = (props: props) => {
               maxLength={50}
               errorMessage={""}
               isRequired={false}
+              onInput={(e) => setLink(e)}
             />
           </div>
 
           <div className="mt-[25px] flex justify-end">
-            <Dialog.Close asChild>
-              <button className="inline-flex h-[35px] items-center justify-center rounded-[4px] bg-green4 px-[15px] font-medium leading-none text-green11 hover:bg-green5 focus:shadow-[0_0_0_2px] focus:shadow-green7 focus:outline-none">
-                Opslaan
-              </button>
-            </Dialog.Close>
+            <button
+              onClick={save}
+              className="inline-flex h-[35px] items-center justify-center rounded-[4px] bg-green4 px-[15px] font-medium leading-none text-green11 hover:bg-green5 focus:shadow-[0_0_0_2px] focus:shadow-green7 focus:outline-none"
+            >
+              Opslaan
+            </button>
           </div>
           <Dialog.Close asChild>
             <button
@@ -139,4 +232,4 @@ const DialogDemo = (props: props) => {
     </Dialog.Root>
   );
 };
-export default DialogDemo;
+export default EditProfileModal;

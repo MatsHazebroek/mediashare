@@ -12,7 +12,7 @@ export const profileRouter = createTRPCRouter({
   completeRegistration: publicProcedure
     .input(
       z.object({
-        username: z.string().min(3).max(30),
+        username: z.string().min(3).max(50),
         description: z.string().max(160).optional(),
         link: z.string().url().optional(),
       })
@@ -135,4 +135,51 @@ export const profileRouter = createTRPCRouter({
           },
         })
     ),
+  update: protectedProcedure
+    .input(
+      z.object({
+        user: z.string().cuid2().optional(),
+        username: z.string().min(3).max(50).optional(),
+        description: z.string().max(160).optional(),
+        link: z.string().url().max(50).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session?.user) throw new TRPCError({ code: "UNAUTHORIZED" });
+      if (
+        input.user &&
+        ctx.session?.user.id !== input.user &&
+        ctx.session.user.role !== "ADMIN"
+      )
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      // check if there is already a user with this username
+      if (input.username) {
+        const searchUsername = await ctx.prisma.user.findUnique({
+          where: { username: input.username },
+        });
+        // if there is a user with this username, throw an error
+        if (searchUsername) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Username already taken",
+          });
+        }
+      }
+
+      return await ctx.prisma.user.update({
+        where: {
+          id: input.user || ctx.session?.user?.id,
+        },
+        data: {
+          username: input.username,
+          description: input.description,
+          link: input.link,
+        },
+        select: {
+          username: true,
+          description: true,
+          link: true,
+        },
+      });
+    }),
 });
