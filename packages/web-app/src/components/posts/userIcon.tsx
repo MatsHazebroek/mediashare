@@ -23,13 +23,17 @@ export const UserIcon = (props: props) => {
           href={"/profile/" + props.User.username}
           className="inline-block cursor-pointer rounded-full shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] outline-none focus:shadow-[0_0_0_2px_white]"
         >
-          <Image
-            src={props.User.image}
-            alt={props.alt || "Profile Picture of" + props.User.username}
-            width={props.width}
-            height={props.height}
-            className={"rounded-full " + (props.className || "")}
-          ></Image>
+          <div>
+            <Image
+              src={props.User.image}
+              alt={props.alt || "Profile Picture of" + props.User.username}
+              width={props.width}
+              height={props.height}
+              className={
+                `rounded-full  object-scale-down ` + (props.className || "")
+              }
+            ></Image>
+          </div>
         </Link>
       </HoverCard.Trigger>
       <HoverCard.Portal>
