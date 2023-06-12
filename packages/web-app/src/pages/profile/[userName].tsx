@@ -33,6 +33,17 @@ const PageContent: NextPage = () => {
     followers.mutate(users.data?.id || "");
   };
 
+  const getMonthAndYaear = () => {
+    if (users.data?.createdAt != null) {
+      const date = new Date(users.data?.createdAt);
+      const month = date.toLocaleString("nl-NL", { month: "long" });
+      const year = date.getFullYear();
+      return `${month} ${year}`;
+    }
+    return "";
+  };
+  console.log(getMonthAndYaear());
+
   return (
     <>
       <Head>
@@ -91,7 +102,7 @@ const PageContent: NextPage = () => {
                     {users.data?.createdAt != null && (
                       <div className="flex items-center justify-center gap-1">
                         <BsCalendarDate />
-                        <span>{users.data?.createdAt.toDateString()}</span>
+                        <span>{getMonthAndYaear()}</span>
                       </div>
                     )}
                   </div>

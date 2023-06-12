@@ -5,6 +5,7 @@ import { MainPost } from "~/components/comment";
 
 import { api } from "~/utils/api";
 import { CreateComent } from "~/components/form/createComment";
+import Loading from "~/components/loading";
 
 type params = {
   commentId: string;
@@ -23,7 +24,7 @@ function Comment() {
       </Head>
       <main>
         {!post.isSuccess ? (
-          <p>Loading...</p>
+          <Loading />
         ) : (
           <>
             <MainPost post={post.data} />
