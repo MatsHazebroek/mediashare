@@ -10,6 +10,7 @@ import { useCookies } from "react-cookie";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { Cross2Icon } from "@radix-ui/react-icons";
+import { AiOutlinePicture } from "react-icons/ai";
 const Comment = (props: { howManyComments: number; postId: string }) => {
   const [howManyComments, setHowMannyComments] = useState(
     props.howManyComments
@@ -121,8 +122,12 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
               }}
               disabled={commentOnPost.isLoading}
             >
-              {(isUploading, permittedFileTypes) => (
-                <p>TEST {isUploading ? "pog" : "dog"}</p>
+              {(permittedFileTypes) => (
+                <div className="mt-2">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
+                    <AiOutlinePicture />
+                  </div>
+                </div>
               )}
             </UploadButton>
 

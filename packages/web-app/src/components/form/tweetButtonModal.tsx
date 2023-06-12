@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import type { OurFileRouter } from "~/server/uploadthing";
 import { UploadButton } from "@uploadthing/react";
 import { RiPencilLine } from "react-icons/ri";
+import { AiOutlinePicture } from "react-icons/ai";
 
 const Index = () => {
   const { data: session } = useSession();
@@ -106,8 +107,12 @@ const Index = () => {
             }}
             disabled={createPost.isLoading}
           >
-            {(isUploading, permittedFileTypes) => (
-              <p>TEST {isUploading ? "pog" : "dog"}</p>
+            {(permittedFileTypes) => (
+              <div className="mt-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
+                  <AiOutlinePicture />
+                </div>
+              </div>
             )}
           </UploadButton>
           <div className="mt-[25px] flex justify-end">
