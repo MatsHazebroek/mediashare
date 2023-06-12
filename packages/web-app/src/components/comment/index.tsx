@@ -7,6 +7,8 @@ import Like from "~/components/posts/likesCount";
 import Comments from "~/components/posts/commentModal";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import DeleteModal from "../posts/deleteModal";
 type props = {
   post: {
     id: string;
@@ -34,12 +36,23 @@ type props = {
   };
 };
 export const MainPost = (props: props) => {
+  const { data: session } = useSession();
   const postLikes = api.posts.like.useMutation({
     onSuccess: (data) => {
       if (data) toast.success("Geliked", { id: "likeToast" });
       if (!data) toast.success("Unliked", { id: "likeToast" });
     },
   });
+
+  const deletePost = api.posts.delete.useMutation({
+    onSuccess: (data) => {
+      if (data) toast.success("Verwijderd");
+    },
+  });
+
+  const submitDelete = (postId: string) => {
+    deletePost.mutate({ post: postId });
+  };
   return (
     <div
       key={props.post.id + "pst"}
@@ -94,6 +107,22 @@ export const MainPost = (props: props) => {
             postId={props.post.id}
             howManyComments={props.post._count.Comment}
           />
+          {session?.user.role === "ADMIN" ? (
+            <div className="mt-1 flex gap-1">
+              <button
+                className="flex items-center justify-center focus:outline-none"
+                title="Delete"
+              >
+                <DeleteModal
+                  onClick={() => {
+                    submitDelete(props.post.id);
+                  }}
+                />
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </Auth>
     </div>

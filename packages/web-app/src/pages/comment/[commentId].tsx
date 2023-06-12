@@ -4,6 +4,7 @@ import { Posts } from "~/components/posts";
 import { MainPost } from "~/components/comment";
 import Sidebar from "~/components/sidebar";
 import { api } from "~/utils/api";
+import { CreateComent } from "~/components/form/createComment";
 
 type params = {
   commentId: string;
@@ -27,6 +28,11 @@ function Comment() {
           ) : (
             <>
               <MainPost post={post.data} />
+
+              <CreateComent
+                howManyComments={post.data._count.Comment}
+                postId={post.data.id}
+              />
               <Posts mainPostId={post.data.id}></Posts>
             </>
           )}
