@@ -4,7 +4,7 @@ import type { Session } from "next-auth";
 export const userPostsHandler = async (
   setting: {
     howMany: number;
-    page: number;
+    cursor: string | null | undefined;
   },
   userId: string,
   type: "tweets" | "media" | "likes",
@@ -51,11 +51,11 @@ export const userPostsHandler = async (
             },
           },
         },
-        // format the data to be like the other queries
+        orderBy: { date: "desc" },
+        take: setting.howMany + 1,
+        cursor: setting.cursor ? { id: setting.cursor } : undefined,
       })
-      .then((data) => {
-        return data.map((d) => d.post);
-      });
+      .then((data) => data.map((d) => d.post));
 
   if (type === "media")
     // get all posts of a specific user that have an image (media)
@@ -93,8 +93,8 @@ export const userPostsHandler = async (
           status: "ACTIVE",
         },
       },
-      take: setting.howMany,
-      skip: setting.page ? setting.page * setting.howMany : 0,
+      take: setting.howMany + 1,
+      cursor: setting.cursor ? { id: setting.cursor } : undefined,
     });
 
   // get all posts of a specific user (tweets)
@@ -131,7 +131,7 @@ export const userPostsHandler = async (
         status: "ACTIVE",
       },
     },
-    take: setting.howMany,
-    skip: setting.page ? setting.page * setting.howMany : 0,
+    take: setting.howMany + 1,
+    cursor: setting.cursor ? { id: setting.cursor } : undefined,
   });
 };
