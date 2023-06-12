@@ -20,7 +20,7 @@ type props = {
         followers: number;
       };
       id: string;
-      name: string | null;
+      username: string | null;
     };
     image: string | null;
     text: string;
@@ -64,7 +64,7 @@ export const MainPost = (props: props) => {
             User={{
               followers: props.post.User._count.followers || 0,
               following: props.post.User._count.following || 0,
-              username: props.post.User.name ?? "",
+              username: props.post.User.username ?? "",
               // description: post.data.User. ?? "",
               id: props.post.User.id,
               image: props.post.User.image,
@@ -74,8 +74,8 @@ export const MainPost = (props: props) => {
           />
         ) : null}
         <span className="ml-2 text-blue-500">
-          <Link href={"/profile/" + (props.post.User.name || "")}>
-            @{props.post.User.name}
+          <Link href={"/profile/" + (props.post.User.username || "")}>
+            @{props.post.User.username}
           </Link>
         </span>
         <span className="ml-2 text-gray-400">
