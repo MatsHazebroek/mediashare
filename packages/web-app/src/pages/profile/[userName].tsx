@@ -53,7 +53,7 @@ const PageContent: NextPage = () => {
                     alt={"Image"}
                     width={1546}
                     height={432}
-                    className={"max-h-full object-scale-down "}
+                    className={"max-h-full object-cover "}
                   />
                 )}
                 <div className="absolute bottom-1 left-4 h-16">
