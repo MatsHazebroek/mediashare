@@ -120,7 +120,12 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
                 setHowManyFiles(numberOfFiles);
               }}
               disabled={commentOnPost.isLoading}
-            />
+            >
+              {(isUploading, permittedFileTypes) => (
+                <p>TEST {isUploading ? "pog" : "dog"}</p>
+              )}
+            </UploadButton>
+
             <div className="mt-[25px] flex justify-end">
               <Dialog.Close asChild>
                 <button

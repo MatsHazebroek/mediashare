@@ -104,7 +104,9 @@ export const CreateComent = (props: {
             setHowManyFiles(numberOfFiles);
           }}
           disabled={commentOnPost.isLoading}
-        />
+        >
+          {() => <button>upload</button>}
+        </UploadButton>
         <button
           onClick={comment}
           className="inline-flex h-[35px] items-center justify-center rounded bg-[#1D9BF9] px-[15px] font-medium leading-none text-white transition-colors duration-200 hover:bg-[#47aefc]"

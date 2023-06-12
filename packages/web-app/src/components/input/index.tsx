@@ -6,6 +6,7 @@ type inputProps = {
   maxLength?: number;
   errorMessage?: string;
   isRequired?: boolean;
+  onInput?: (value: string) => void;
 };
 
 const Index: React.FC<inputProps> = ({
@@ -14,6 +15,7 @@ const Index: React.FC<inputProps> = ({
   maxLength,
   errorMessage,
   isRequired = true,
+  onInput,
 }) => {
   const [value, setValue] = useState(initialValue);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -21,6 +23,7 @@ const Index: React.FC<inputProps> = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (onInput) onInput(event.target.value);
     setValue(event.target.value);
     setIsEmpty(false);
   };

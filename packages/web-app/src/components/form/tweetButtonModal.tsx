@@ -105,7 +105,11 @@ const Index = () => {
               setHowManyFiles(numberOfFiles);
             }}
             disabled={createPost.isLoading}
-          />
+          >
+            {(isUploading, permittedFileTypes) => (
+              <p>TEST {isUploading ? "pog" : "dog"}</p>
+            )}
+          </UploadButton>
           <div className="mt-[25px] flex justify-end">
             <Dialog.Close asChild>
               <button
