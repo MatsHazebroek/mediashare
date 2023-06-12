@@ -12,6 +12,7 @@ import { useCookies } from "react-cookie";
 
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+import { AiOutlinePicture } from "react-icons/ai";
 
 export const CreatePost = () => {
   const { data: session } = useSession();
@@ -75,6 +76,12 @@ export const CreatePost = () => {
           disabled={createPost.isLoading}
         ></textarea>
       </div>
+      <button
+        onClick={tweet}
+        className="rounded bg-[#1D9BF9] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#47aefc]"
+      >
+        Tweet
+      </button>
       <UploadButton<OurFileRouter>
         endpoint="postUploader"
         startUpload={handleStartUpload}
@@ -98,16 +105,14 @@ export const CreatePost = () => {
         }}
         disabled={createPost.isLoading}
       >
-        {(isUploading, permittedFileTypes) => (
-          <p>TEST {isUploading ? "pog" : "dog"}</p>
+        {(permittedFileTypes) => (
+          <div className="mt-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
+              <AiOutlinePicture />
+            </div>
+          </div>
         )}
       </UploadButton>
-      <button
-        onClick={tweet}
-        className="rounded bg-[#1D9BF9] px-4 py-2 text-white transition-colors duration-200 hover:bg-[#47aefc]"
-      >
-        Tweet
-      </button>
     </div>
   );
 };

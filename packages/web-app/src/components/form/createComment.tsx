@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import toast from "react-hot-toast";
+import { AiOutlinePicture } from "react-icons/ai";
 import type { OurFileRouter } from "~/server/uploadthing";
 import { api } from "~/utils/api";
 
@@ -57,14 +58,14 @@ export const CreateComent = (props: {
   };
   return (
     <>
-      <div className="flex flex-row p-2 text-gray-800 placeholder:text-5xl">
+      <div className="flex flex-row p-4 text-gray-800 placeholder:text-5xl">
         {typeof session?.user.image == "string" ? (
           <div>
             <Image
               src={session.user.image}
               alt={"Image"}
-              width={40}
-              height={40}
+              width={50}
+              height={50}
               className={"rounded-full"}
             ></Image>
           </div>
@@ -105,7 +106,13 @@ export const CreateComent = (props: {
           }}
           disabled={commentOnPost.isLoading}
         >
-          {() => <button>upload</button>}
+          {() => (
+            <div className="mt-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
+                <AiOutlinePicture />
+              </div>
+            </div>
+          )}
         </UploadButton>
         <button
           onClick={comment}
