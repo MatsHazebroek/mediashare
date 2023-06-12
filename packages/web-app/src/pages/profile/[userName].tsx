@@ -51,7 +51,7 @@ const PageContent: NextPage = () => {
             <></>
           ) : (
             <div className="overflow flex h-full w-full justify-center">
-              <div className="relative m-2 w-full max-w-[1546px] bg-white shadow-md">
+              <div className="relative m-2 min-h-full w-full max-w-[1546px] bg-white shadow-md">
                 <div className="flex h-1/3 max-h-[432px] items-start justify-center bg-slate-600">
                   {typeof users.data?.banner == "string" && (
                     <Image
@@ -154,7 +154,7 @@ const PageContent: NextPage = () => {
                   </div>
                 </div>
 
-                <div>
+                <div className="bg-white">
                   <PostOfUser userId={users.data?.id || ""} />
                 </div>
               </div>
