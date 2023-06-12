@@ -80,7 +80,12 @@ const EditProfileModal = (props: props) => {
           description && props.user.description !== description
             ? description
             : undefined,
-        link: link && props.user.link !== link ? link : undefined,
+        link:
+          link && link !== props.user.link
+            ? link?.startsWith("https://")
+              ? link
+              : "https://" + link
+            : undefined,
       });
     if (startBannerImageUpload.current) startBannerImageUpload.current();
     if (startUserImageUpload.current) startUserImageUpload.current();
@@ -202,7 +207,9 @@ const EditProfileModal = (props: props) => {
 
             <InputField
               label="Website"
-              initialValue=""
+              initialValue={
+                props.user.link ? new URL(props.user.link).hostname : ""
+              }
               maxLength={50}
               errorMessage={""}
               isRequired={false}

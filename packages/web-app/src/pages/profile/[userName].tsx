@@ -74,28 +74,29 @@ const PageContent: NextPage = () => {
                   <div className="mt-2">
                     {users.data?.description != null && users.data?.description}
                   </div>
+                  <div className="flex gap-4">
+                    {typeof users.data?.link == "string" && (
+                      <div className="flex items-center justify-center">
+                        <AiOutlineLink />
 
-                  <div className="flex flex-grow items-center justify-end">
-                    {status == "authenticated" &&
-                      session?.user.name != users.data?.username && (
-                        <ProfileFollow
-                          hasFollowed={
-                            users.data?.followers.some(
-                              (follower) => follower.userId == session?.user.id
-                            ) || false
-                          }
-                          onClick={submit}
-                        />
-                      )}
-                    {users.isSuccess &&
-                      (session?.user.name == users.data.username ||
-                        session?.user.role == "ADMIN") && (
-                        <EditProfileModal user={users.data} />
-                      )}
-                    {session?.user.role == "ADMIN" && <DeleteProfile />}
-
+                        <Link
+                          href={users.data?.link}
+                          className="text-blue-500 hover:underline"
+                          target="_blank"
+                        >
+                          {new URL(users.data?.link).hostname}
+                        </Link>
+                      </div>
+                    )}
+                    {users.data?.createdAt != null && (
+                      <div className="flex items-center justify-center gap-1">
+                        <BsCalendarDate />
+                        <span>{users.data?.createdAt.toDateString()}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="text-1xl flex gap-2">
+                    <span></span>
                     <span className="cursor-pointer text-black hover:underline">
                       <span className="font-bold">
                         {users.data?._count.following}
@@ -111,41 +112,23 @@ const PageContent: NextPage = () => {
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-end">
-                  {session?.user.name != users.data?.username ? (
-                    <>
-                      {status == "authenticated" ? (
-                        <>
-                          <ProfileFollow
-                            hasFollowed={
-                              users.data?.followers.some(
-                                (follower) =>
-                                  follower.userId == session?.user.id
-                              ) || false
-                            }
-                            onClick={submit}
-                          />
-                          {users.isSuccess && (
-                            <EditProfileModal user={users.data} />
-                          )}
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {users.isSuccess && (
-                        <EditProfileModal user={users.data} />
-                      )}
-                    </>
-                  )}
-                  {session?.user.role == "ADMIN" ? (
-                    <>
-                      <DeleteProfile />
-                    </>
-                  ) : (
-                    ""
-                  )}
+                  {status == "authenticated" &&
+                    session?.user.name != users.data?.username && (
+                      <ProfileFollow
+                        hasFollowed={
+                          users.data?.followers.some(
+                            (follower) => follower.userId == session?.user.id
+                          ) || false
+                        }
+                        onClick={submit}
+                      />
+                    )}
+                  {users.isSuccess &&
+                    (session?.user.name == users.data.username ||
+                      session?.user.role == "ADMIN") && (
+                      <EditProfileModal user={users.data} />
+                    )}
+                  {session?.user.role == "ADMIN" && <DeleteProfile />}
                 </div>
               </div>
 

@@ -152,6 +152,15 @@ export const profileRouter = createTRPCRouter({
         ctx.session.user.role !== "ADMIN"
       )
         throw new TRPCError({ code: "UNAUTHORIZED" });
+        // link only https allowed
+        if(input.link) {
+          if(!input.link.startsWith("https://")) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Only https links allowed",
+            });
+          }
+        }
       // check if there is already a user with this username
       if (input.username) {
         const searchUsername = await ctx.prisma.user.findUnique({
