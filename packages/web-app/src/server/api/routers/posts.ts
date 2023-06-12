@@ -56,7 +56,7 @@ export const postRouter = createTRPCRouter({
                   User: {
                     select: {
                       _count: { select: { followers: true, following: true } },
-                      name: true,
+                      username: true,
                       id: true,
                       status: true,
                       image: true,
@@ -102,7 +102,7 @@ export const postRouter = createTRPCRouter({
                 id: true,
                 _count: { select: { followers: true, following: true } },
                 description: true,
-                name: true,
+                username: true,
                 image: true,
               },
             },
@@ -130,6 +130,7 @@ export const postRouter = createTRPCRouter({
           id: true,
           text: true,
           image: true,
+
           createdAt: true,
           updatedAt: true,
           Like: {
@@ -143,9 +144,9 @@ export const postRouter = createTRPCRouter({
           User: {
             select: {
               id: true,
+              username: true,
               _count: { select: { followers: true, following: true } },
               description: true,
-              name: true,
               image: true,
             },
           },
@@ -189,7 +190,7 @@ export const postRouter = createTRPCRouter({
             User: {
               select: {
                 _count: { select: { followers: true, following: true } },
-                name: true,
+                username: true,
                 id: true,
                 status: true,
                 image: true,

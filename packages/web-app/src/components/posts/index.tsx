@@ -91,7 +91,7 @@ export const Posts = (props: props) => {
                   User={{
                     followers: post.User._count.followers || 0,
                     following: post.User._count.following || 0,
-                    username: post.User.name ?? "",
+                    username: post.User.username ?? "",
                     description: post.User.description ?? "",
                     id: post.User.id,
                     image: post.User.image,
@@ -101,8 +101,8 @@ export const Posts = (props: props) => {
                 />
               ) : null}
               <span className="ml-2 text-blue-500">
-                <Link href={"/profile/" + (post.User.name || "")}>
-                  @{post.User.name}
+                <Link href={"/profile/" + (post.User.username || "")}>
+                  @{post.User.username}
                 </Link>
               </span>
               <span className="ml-2 text-gray-400">
