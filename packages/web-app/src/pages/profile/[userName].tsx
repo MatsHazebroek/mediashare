@@ -53,7 +53,7 @@ const PageContent: NextPage = () => {
                     alt={"Image"}
                     width={1546}
                     height={432}
-                    className={"max-h-full object-scale-down "}
+                    className={"max-h-full object-cover "}
                   />
                 )}
                 <div className="absolute bottom-1 left-4 h-16">
@@ -128,7 +128,9 @@ const PageContent: NextPage = () => {
                       session?.user.role == "ADMIN") && (
                       <EditProfileModal user={users.data} />
                     )}
-                  {session?.user.role == "ADMIN" && <DeleteProfile />}
+                  {session?.user.role == "ADMIN" && users.data?.id && (
+                    <DeleteProfile user={{ id: users.data?.id }} />
+                  )}
                 </div>
               </div>
 

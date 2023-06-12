@@ -9,6 +9,7 @@ import {
 } from "~/server/api/trpc";
 import { userPostsHandler } from "./handlers/userPosts";
 import { utapi } from "uploadthing/server";
+import { getAllPostsSelector } from "./selectors/getAllPosts";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -21,16 +22,35 @@ export const postRouter = createTRPCRouter({
             type: z.enum(["tweets", "media", "likes"]),
           })
           .optional(),
-        page: z.number().min(0).optional(),
+        cursor: z.string().cuid2().nullish(),
         howMany: z.number().min(1).max(50).default(25),
         /** Get the comments of the post */
         postId: z.string().cuid2().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
+      const returnSelect = getAllPostsSelector(ctx);
+      let dataToReturn:
+        | {
+            _count: { Like: number; Comment: number };
+            id: string;
+            text: string;
+            image: string | null;
+            createdAt: Date;
+            updatedAt: Date;
+            Like: { date: Date }[];
+            User: {
+              id: string;
+              username: string | null;
+              _count: { followers: number; following: number };
+              description: string | null;
+              image: string | null;
+            };
+          }[]
+        | undefined = undefined;
       // get the comments of a specific post
       if (input.postId)
-        return await ctx.prisma.comment
+        dataToReturn = await ctx.prisma.comment
           .findMany({
             where: {
               main: { User: { status: "ACTIVE" }, id: input.postId },
@@ -56,7 +76,7 @@ export const postRouter = createTRPCRouter({
                   User: {
                     select: {
                       _count: { select: { followers: true, following: true } },
-                      name: true,
+                      username: true,
                       id: true,
                       status: true,
                       image: true,
@@ -66,13 +86,15 @@ export const postRouter = createTRPCRouter({
                 },
               },
             },
+            take: input.howMany + 1,
+            cursor: input.cursor ? { id: input.cursor } : undefined,
           })
           .then((comments) => comments.map((comment) => comment.reply));
 
       // get all posts of a specific user
       if (input.user)
-        return await userPostsHandler(
-          { howMany: input.howMany, page: input.page || 0 },
+        dataToReturn = await userPostsHandler(
+          { howMany: input.howMany, cursor: input.cursor },
           input.user.id,
           input.user.type,
           ctx
@@ -80,33 +102,9 @@ export const postRouter = createTRPCRouter({
 
       // get all posts of the users that the current user is following
       if (input.following && ctx.session)
-        return await ctx.prisma.post.findMany({
+        dataToReturn = await ctx.prisma.post.findMany({
           orderBy: { createdAt: "desc" },
-          select: {
-            _count: { select: { Like: true, Comment: true } },
-            id: true,
-            text: true,
-            image: true,
-            createdAt: true,
-            updatedAt: true,
-            Like: {
-              select: {
-                date: true,
-              },
-              where: {
-                userId: ctx.session?.user.id,
-              },
-            },
-            User: {
-              select: {
-                id: true,
-                _count: { select: { followers: true, following: true } },
-                description: true,
-                name: true,
-                image: true,
-              },
-            },
-          },
+          select: returnSelect,
           where: {
             User: {
               following: {
@@ -117,47 +115,34 @@ export const postRouter = createTRPCRouter({
               status: "ACTIVE",
             },
           },
-          take: input.howMany,
-          skip: input.page ? input.page * input.howMany : 0,
+          take: input.howMany + 1,
+          cursor: input.cursor ? { id: input.cursor } : undefined,
         });
 
       // TODO: recommend posts based on user the followers that the user is following
       // user is not logged in, get recent posts
-      return await ctx.prisma.post.findMany({
-        orderBy: { createdAt: "desc" },
-        select: {
-          _count: { select: { Like: true, Comment: true } },
-          id: true,
-          text: true,
-          image: true,
-          createdAt: true,
-          updatedAt: true,
-          Like: {
-            select: {
-              date: true,
-            },
-            where: {
-              userId: ctx.session?.user.id,
+      if (dataToReturn === undefined)
+        dataToReturn = await ctx.prisma.post.findMany({
+          orderBy: { createdAt: "desc" },
+          select: returnSelect,
+          where: {
+            User: {
+              status: "ACTIVE",
             },
           },
-          User: {
-            select: {
-              id: true,
-              _count: { select: { followers: true, following: true } },
-              description: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
-        where: {
-          User: {
-            status: "ACTIVE",
-          },
-        },
-        take: input.howMany,
-        skip: input.page ? input.page * input.howMany : 0,
-      });
+          take: input.howMany + 1,
+          cursor: input.cursor ? { id: input.cursor } : undefined,
+        });
+
+      let nextCursor: typeof input.cursor | undefined = undefined;
+      if (dataToReturn.length > input.howMany) {
+        const nextItem = dataToReturn.pop();
+        nextCursor = nextItem?.id;
+      }
+      return {
+        data: dataToReturn,
+        nextCursor,
+      };
     }),
   getOne: publicProcedure
     .input(
@@ -189,7 +174,7 @@ export const postRouter = createTRPCRouter({
             User: {
               select: {
                 _count: { select: { followers: true, following: true } },
-                name: true,
+                username: true,
                 id: true,
                 status: true,
                 image: true,

@@ -1,7 +1,16 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross2Icon } from "@radix-ui/react-icons";
-
-function deleteProfile() {
+import { api } from "~/utils/api";
+type props = {
+  user: {
+    id: string;
+  };
+};
+function deleteProfile(props: props) {
+  const deleteProfile = api.profile.ban.useMutation();
+  const ban = () => {
+    deleteProfile.mutate({ user: props.user.id });
+  };
   return (
     <>
       <Dialog.Root>
@@ -21,7 +30,10 @@ function deleteProfile() {
             </Dialog.Description>
             <div className="mt-[25px] flex justify-end">
               <Dialog.Close asChild>
-                <button className="inline-flex h-[35px] items-center justify-center rounded-[4px] bg-red-200 px-[15px] font-medium leading-none text-red-500  focus:outline-none">
+                <button
+                  onClick={ban}
+                  className="inline-flex h-[35px] items-center justify-center rounded-[4px] bg-red-200 px-[15px] font-medium leading-none text-red-500  focus:outline-none"
+                >
                   Verbannen
                 </button>
               </Dialog.Close>

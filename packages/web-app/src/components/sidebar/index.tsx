@@ -53,7 +53,7 @@ const Index = (props: props) => {
               <Auth>
                 <li>
                   <Link
-                    href={"/profile/" + (session?.user.name || "")}
+                    href={"/profile/" + (session?.user.username || "")}
                     className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                   >
                     <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
@@ -124,6 +124,7 @@ const Index = (props: props) => {
                             alt={"Image"}
                             width={40}
                             height={40}
+                            style={{ width: 40, height: 40 }}
                             className={"rounded-full"}
                           ></Image>
                         </div>
@@ -165,7 +166,7 @@ const Index = (props: props) => {
               <Link
                 type="button"
                 className="group flex flex-col items-center justify-center px-3 hover:bg-gray-50"
-                href={"/profile/" + (session?.user.name || "")}
+                href={"/profile/" + (session?.user.username || "")}
               >
                 <RiUserLine
                   size={18}
