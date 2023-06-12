@@ -10,6 +10,8 @@ import Like from "./likesCount";
 import Comments from "./commentModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
+import { useEffect, useRef } from "react";
+import { useIntersection } from "@mantine/hooks";
 
 type props = {
   user?: {
@@ -22,36 +24,47 @@ type props = {
 
 export const Posts = (props: props) => {
   const { data: session } = useSession();
-
-  const posts = api.posts.getAll.useQuery({
-    page: 0,
-    howMany: 10,
-    user: props.user,
-    following: props.yourFollwing,
-    postId: props.mainPostId,
-  });
-
+  // get posts api
+  const posts = api.posts.getAll.useInfiniteQuery(
+    {
+      howMany: 10,
+      user: props.user,
+      following: props.yourFollwing,
+      postId: props.mainPostId,
+    },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+  );
+  // like post api
   const postLikes = api.posts.like.useMutation({
     onSuccess: (data) => {
       if (data) toast.success("Geliked", { id: "likeToast" });
       if (!data) toast.success("Unliked", { id: "likeToast" });
     },
   });
-
+  // infinite scroll
+  const lastPostRef = useRef<HTMLElement | null>(null);
+  const { ref, entry } = useIntersection({
+    root: lastPostRef.current,
+    threshold: 1,
+  });
+  useEffect(() => {
+    if (entry?.isIntersecting) void posts.fetchNextPage();
+  }, [entry]);
+  // like post
   const submit = (postId: string) => {
     postLikes.mutate({ post: postId });
   };
-
+  // delete post
   const deletePost = api.posts.delete.useMutation({
     onSuccess: (data) => {
       if (data) toast.success("Verwijderd");
     },
   });
-
+  // confirm delete post
   const submitDelete = (postId: string) => {
     deletePost.mutate({ post: postId });
   };
-
+  // loading
   if (posts.isLoading)
     return (
       <>
@@ -75,12 +88,16 @@ export const Posts = (props: props) => {
         </div>
       </>
     );
+  // error
   if (posts.isError) return <div>Error: {posts.error.message}</div>;
+  // pages to one array
+  const _posts = posts.data.pages.flatMap((page) => page.data);
 
   return (
     <div className="m-2 bg-white">
-      {posts.data.map((post) => (
+      {_posts.map((post, i) => (
         <div
+          ref={i === _posts.length - 1 ? ref : undefined}
           key={post.id + "post"}
           className="mb-3 rounded border border-gray-200 p-4 shadow-md transition-colors duration-300 hover:bg-gray-200"
         >
