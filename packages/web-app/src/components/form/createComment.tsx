@@ -64,8 +64,9 @@ export const CreateComent = (props: {
             <Image
               src={session.user.image}
               alt={"Image"}
-              width={50}
-              height={50}
+              width={40}
+              height={40}
+              style={{ width: 40, height: 40 }}
               className={"rounded-full"}
             ></Image>
           </div>

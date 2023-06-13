@@ -39,6 +39,10 @@ export const postRouter = createTRPCRouter({
             createdAt: Date;
             updatedAt: Date;
             Like: { date: Date }[];
+            ReplyingTo?: {
+              commentId: string;
+              username: string | null;
+            };
             User: {
               id: string;
               username: string | null;
@@ -57,6 +61,18 @@ export const postRouter = createTRPCRouter({
               reply: { User: { status: "ACTIVE" } },
             },
             select: {
+              // the username of the user that is being replied to
+              main: {
+                select: {
+                  id: true,
+                  User: {
+                    select: {
+                      username: true,
+                    },
+                  },
+                },
+              },
+              // the comment that replies to the main comment
               reply: {
                 select: {
                   _count: { select: { Like: true, Comment: true } },
@@ -89,7 +105,15 @@ export const postRouter = createTRPCRouter({
             take: input.howMany + 1,
             cursor: input.cursor ? { id: input.cursor } : undefined,
           })
-          .then((comments) => comments.map((comment) => comment.reply));
+          .then((comments) =>
+            comments.map((comment) => ({
+              ...comment.reply,
+              ReplyingTo: {
+                username: comment.main.User.username,
+                commentId: comment.main.id,
+              },
+            }))
+          );
 
       // get all posts of a specific user
       if (input.user)
@@ -169,6 +193,20 @@ export const postRouter = createTRPCRouter({
               },
               where: {
                 userId: ctx.session?.user.id,
+              },
+            },
+            Reply: {
+              select: {
+                main: {
+                  select: {
+                    id: true,
+                    User: {
+                      select: {
+                        username: true,
+                      },
+                    },
+                  },
+                },
               },
             },
             User: {

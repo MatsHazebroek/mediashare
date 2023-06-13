@@ -85,6 +85,16 @@ export const Posts = (props: props) => {
           key={post.id + "post"}
           className="mb-3 rounded border border-gray-200 p-4 shadow-md transition-colors duration-300 hover:bg-gray-200"
         >
+          {props.mainPostId != null &&
+            post.ReplyingTo?.commentId &&
+            post.ReplyingTo?.username && (
+              <Link href={"/comment/" + post.ReplyingTo?.commentId}>
+                Antwoorde op{" "}
+                <span className=" text-blue-500">
+                  @{post.ReplyingTo?.username}
+                </span>
+              </Link>
+            )}
           <Link href={"/comment/" + post.id} className="cursor-pointer">
             <div className="mb-4 flex flex-row text-gray-600">
               {typeof post.User.image == "string" ? (
