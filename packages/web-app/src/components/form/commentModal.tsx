@@ -1,16 +1,21 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useRef, useState } from "react";
-import { BiComment } from "react-icons/bi";
+
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { UploadButton } from "@uploadthing/react";
-import type { OurFileRouter } from "~/server/uploadthing";
-import { useDebouncedState } from "@mantine/hooks";
+
+import { useRef, useState } from "react";
+import { BiComment } from "react-icons/bi";
 import { useCookies } from "react-cookie";
-import { api } from "~/utils/api";
 import toast from "react-hot-toast";
-import { Cross2Icon } from "@radix-ui/react-icons";
 import { AiOutlinePicture } from "react-icons/ai";
+
+import { api } from "~/utils/api";
+import type { OurFileRouter } from "~/server/uploadthing";
+
+import { UploadButton } from "@uploadthing/react";
+import { useDebouncedState } from "@mantine/hooks";
+import { Cross2Icon } from "@radix-ui/react-icons";
+
 const Comment = (props: { howManyComments: number; postId: string }) => {
   const [howManyComments, setHowMannyComments] = useState(
     props.howManyComments
@@ -75,7 +80,7 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-blackA9 data-[state=open]:animate-overlayShow" />
-          <Dialog.Content className="fixed left-[50%] top-[50%] max-h-[85vh] w-[100vw] max-w-[550px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow">
+          <Dialog.Content className="fixed left-0 top-0 h-full max-h-full w-full max-w-full bg-white p-5 shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow sm:p-[25px]">
             <div className="flex flex-row">
               {typeof session?.user.image == "string" ? (
                 <div>
@@ -124,9 +129,9 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
             >
               {(permittedFileTypes) => (
                 <div className="mt-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
+                  <button className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
                     <AiOutlinePicture />
-                  </div>
+                  </button>
                 </div>
               )}
             </UploadButton>

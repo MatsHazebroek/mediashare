@@ -1,14 +1,18 @@
 import Link from "next/link";
-import { UserIcon } from "../posts/userIcon";
-import { timeSince } from "../posts/formatTime";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+
+import toast from "react-hot-toast";
+
 import Auth from "~/components/auth";
 import Like from "~/components/posts/likesCount";
-import Comments from "~/components/posts/commentModal";
+import Comments from "~/components/form/commentModal";
+import { UserIcon } from "~/components/posts/userIcon";
+import { timeSince } from "~/components/posts/formatTime";
+import DeleteModal from "~/components/posts/deleteModal";
+
 import { api } from "~/utils/api";
-import toast from "react-hot-toast";
-import { useSession } from "next-auth/react";
-import DeleteModal from "../posts/deleteModal";
+
 type props = {
   post: {
     id: string;
@@ -35,6 +39,7 @@ type props = {
     updatedAt: Date;
   };
 };
+
 export const MainPost = (props: props) => {
   const { data: session } = useSession();
   const postLikes = api.posts.like.useMutation({

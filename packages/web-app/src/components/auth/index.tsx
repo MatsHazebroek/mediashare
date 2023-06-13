@@ -1,9 +1,11 @@
+// Next Auth Imports
 import { useSession } from "next-auth/react";
 
 type props = {
   children: React.ReactNode;
 };
 
+// Checks if the user is authenticated and active
 function Auth(props: props) {
   const { status, data: session } = useSession();
   if (

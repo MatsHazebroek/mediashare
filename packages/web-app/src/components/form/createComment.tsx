@@ -64,7 +64,6 @@ export const CreateComent = (props: {
             <Image
               src={session.user.image}
               alt={"Image"}
-
               width={50}
               height={50}
               className={"rounded-full"}
@@ -109,9 +108,9 @@ export const CreateComent = (props: {
         >
           {() => (
             <div className="mt-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
+              <button className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
                 <AiOutlinePicture />
-              </div>
+              </button>
             </div>
           )}
         </UploadButton>
