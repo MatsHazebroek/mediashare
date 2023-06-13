@@ -21,6 +21,7 @@ const config = {
   experimental: {
     esmExternals: false, // THIS IS THE FLAG THAT MATTERS
   },
+  distDir: "build",
   images: {
     domains: [
       "lh3.googleusercontent.com",
