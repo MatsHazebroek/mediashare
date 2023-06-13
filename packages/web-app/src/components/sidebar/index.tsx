@@ -53,6 +53,33 @@ const Index = (props: props) => {
               <Auth>
                 <li>
                   <Link
+                    href={"/following"}
+                    className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
+                  >
+                    <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
+                      <svg
+                        className="mb-1 h-6 w-6 text-gray-500 group-hover:text-blue-600"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          clip-rule="evenodd"
+                          fill-rule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                        ></path>
+                      </svg>
+                    </span>
+                    <span className="text-lg font-medium">
+                      Following tweets
+                    </span>
+                  </Link>
+                </li>
+              </Auth>
+              <Auth>
+                <li>
+                  <Link
                     href={"/profile/" + (session?.user.username || "")}
                     className="mx-auto flex h-12 w-52 flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
                   >

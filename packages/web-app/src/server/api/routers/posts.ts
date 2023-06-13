@@ -131,9 +131,9 @@ export const postRouter = createTRPCRouter({
           select: returnSelect,
           where: {
             User: {
-              following: {
+              followers: {
                 some: {
-                  id: ctx.session.user.id,
+                  userId: ctx.session.user.id,
                 },
               },
               status: "ACTIVE",
