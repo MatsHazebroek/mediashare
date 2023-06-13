@@ -31,6 +31,14 @@ type props = {
     Like: {
       date: Date;
     }[];
+    Reply: {
+      main: {
+        id: string;
+        User: {
+          username: string | null;
+        };
+      };
+    }[];
     _count: {
       Like: number;
       Comment: number;
@@ -63,6 +71,15 @@ export const MainPost = (props: props) => {
       key={props.post.id + "pst"}
       className="mb-3 rounded border border-gray-200 p-4 shadow-md transition-colors duration-300 hover:bg-gray-200"
     >
+      {props.post.Reply[0]?.main.id &&
+        props.post.Reply[0]?.main.User.username && (
+          <Link href={"/comment/" + props.post.Reply[0].main.id}>
+            Antwoorde op{" "}
+            <span className=" text-blue-500">
+              @{props.post.Reply[0].main.User.username}
+            </span>
+          </Link>
+        )}
       <div className="mb-4 flex flex-row text-gray-600">
         {typeof props.post.User.image == "string" ? (
           <UserIcon
