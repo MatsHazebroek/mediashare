@@ -9,7 +9,6 @@ import { useCookies } from "react-cookie";
 import toast from "react-hot-toast";
 import type { OurFileRouter } from "~/server/uploadthing";
 import { UploadButton } from "@uploadthing/react";
-import { RiPencilLine } from "react-icons/ri";
 import { AiOutlinePicture } from "react-icons/ai";
 
 const Index = () => {
@@ -32,7 +31,7 @@ const Index = () => {
       });
     },
     onSuccess: (res) => {
-      // if we have files, set the post ID cookie and start the upload (UploadThing will handle the rest)
+      // If we have files, set the post ID cookie and start the upload (UploadThing will handle the rest)
       if (howManyFiles > 0) {
         setCookies("post", res.id, {
           secure: true,
@@ -109,9 +108,9 @@ const Index = () => {
           >
             {(permittedFileTypes) => (
               <div className="mt-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
+                <button className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
                   <AiOutlinePicture />
-                </div>
+                </button>
               </div>
             )}
           </UploadButton>

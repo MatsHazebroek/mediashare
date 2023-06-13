@@ -7,7 +7,7 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 import Auth from "../auth";
 import Like from "./likesCount";
-import Comments from "./commentModal";
+import Comments from "../form/commentModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 import { useEffect, useRef } from "react";
