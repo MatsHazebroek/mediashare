@@ -64,7 +64,14 @@ export const CreatePost = () => {
               alt={"Image"}
               width={40}
               height={40}
-              style={{ width: 40, height: 40 }}
+              style={{
+                width: 40,
+                height: 40,
+                minHeight: 40,
+                minWidth: 40,
+                maxHeight: 40,
+                maxWidth: 40,
+              }}
               className={"rounded-full"}
             ></Image>
           </div>
