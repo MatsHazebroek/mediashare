@@ -127,7 +127,7 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
               }}
               disabled={commentOnPost.isLoading}
             >
-              {(permittedFileTypes) => (
+              {() => (
                 <div className="mt-2">
                   <button className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
                     <AiOutlinePicture />
