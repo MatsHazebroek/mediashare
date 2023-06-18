@@ -80,8 +80,8 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
         </Dialog.Trigger>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-blackA9 data-[state=open]:animate-overlayShow" />
-          <Dialog.Content className="fixed left-0 top-0 h-full max-h-full w-full max-w-full bg-white p-5 shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow sm:p-[25px]">
-            <div className="flex flex-row">
+          <Dialog.Content className="fixed left-0 top-0 h-full w-full max-w-full bg-white p-5 shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none data-[state=open]:animate-contentShow sm:left-[50%] sm:top-[50%] sm:max-h-[25vh] sm:w-[100vw] sm:max-w-[550px] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:p-[25px]">
+            <div className="mt-3 flex flex-row">
               {typeof session?.user.image == "string" ? (
                 <div>
                   <Image
@@ -94,7 +94,7 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
                 </div>
               ) : null}
               <textarea
-                className="mb-2 ml-2 max-h-80 w-[430px] rounded border p-1.5"
+                className="mb-2 ml-2 max-h-80 w-[430px] rounded border p-1.5 sm:w-full"
                 placeholder="Wat gebeurt er?"
                 id="test"
                 onInput={(e) => setMessage(e.currentTarget.value)}
@@ -127,7 +127,7 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
               }}
               disabled={commentOnPost.isLoading}
             >
-              {(permittedFileTypes) => (
+              {() => (
                 <div className="mt-2">
                   <button className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
                     <AiOutlinePicture />
@@ -148,7 +148,7 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
             </div>
             <Dialog.Close asChild>
               <button
-                className="absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                className="absolute right-[10px] top-[0px] mt-1 inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
                 aria-label="Close"
                 title="Close"
               >

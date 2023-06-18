@@ -21,7 +21,7 @@ export const UserIcon = (props: props) => {
       <HoverCard.Trigger asChild>
         <Link
           href={"/profile/" + props.User.username}
-          className="inline-block cursor-pointer rounded-full shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] outline-none focus:shadow-[0_0_0_2px_white]"
+          className="inline-block cursor-pointer rounded-full  outline-none"
         >
           <div>
             <Image
@@ -29,7 +29,14 @@ export const UserIcon = (props: props) => {
               alt={props.alt || "Profile Picture of" + props.User.username}
               width={props.width}
               height={props.height}
-              style={{ width: props.width, height: props.height }}
+              style={{
+                width: props.width,
+                height: props.height,
+                minHeight: props.height,
+                minWidth: props.width,
+                maxHeight: props.height,
+                maxWidth: props.width,
+              }}
               className={`rounded-full ` + (props.className || "")}
             ></Image>
           </div>
