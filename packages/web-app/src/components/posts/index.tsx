@@ -69,7 +69,8 @@ export const Posts = (props: props) => {
         newPost.map((post) => {
           if (
             ((post.type == "tweet" && props.mainPostId == undefined) ||
-              (post.type == "comment" && props.mainPostId != undefined)) &&
+              (post.type == "comment" &&
+                props.mainPostId == post.post.ReplyingTo?.commentId)) &&
             props.user == undefined &&
             props.yourFollwing == undefined
           ) {
@@ -77,8 +78,8 @@ export const Posts = (props: props) => {
             const lastPost = _posts[_posts.length - 1];
             if (
               !alreadyRendered &&
-              lastPost &&
-              lastPost.createdAt < post.post.createdAt
+              (lastPost == undefined ||
+                lastPost.createdAt < post.post.createdAt)
             )
               return (
                 <Post
