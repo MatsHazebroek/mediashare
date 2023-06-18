@@ -10,9 +10,13 @@ import toast from "react-hot-toast";
 import type { OurFileRouter } from "~/server/uploadthing";
 import { UploadButton } from "@uploadthing/react";
 import { AiOutlinePicture } from "react-icons/ai";
+import { useAtom } from "jotai";
+import { newPostAtom } from "~/atoms/newPost";
 
 const Index = () => {
   const { data: session } = useSession();
+  const [, setNewPost] = useAtom(newPostAtom);
+  const [response, setResponse] = useState<PostType | null>(null);
   const startUploadRef = useRef<(() => void) | null>(null); // This is a hack to get around the fact that UploadButton doesn't have a prop for this
   const textArea = useRef<HTMLTextAreaElement>(null); // To clean up the textarea after posting
   const [message, setMessage] = useDebouncedState("", 200); // Debounce the message so we don't re-render too much
@@ -38,9 +42,12 @@ const Index = () => {
           sameSite: "strict",
           path: "/",
         });
+        setResponse(res);
         if (startUploadRef.current) return startUploadRef.current();
       }
       toast.success("Post created!", { id: "createPost", duration: 2000 });
+      // display newly created posts
+      setNewPost({ post: res, type: "tweet" });
       setMessage("");
     },
   });
@@ -83,13 +90,19 @@ const Index = () => {
           <UploadButton<OurFileRouter>
             endpoint="postUploader"
             startUpload={handleStartUpload}
-            onClientUploadComplete={() => {
+            onClientUploadComplete={(file) => {
               // Do something with the response
               removeCookies("post");
               toast.success("Post created!", {
                 id: "createPost",
                 duration: 2000,
               });
+              // display newly created posts
+              if (response && file)
+                setNewPost({
+                  post: { ...response, image: file[0]?.fileUrl ?? null },
+                  type: "tweet",
+                });
               setMessage("");
             }}
             onUploadError={(error: Error) => {
@@ -106,7 +119,7 @@ const Index = () => {
             }}
             disabled={createPost.isLoading}
           >
-            {(permittedFileTypes) => (
+            {() => (
               <div className="mt-2">
                 <button className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-green-200">
                   <AiOutlinePicture />

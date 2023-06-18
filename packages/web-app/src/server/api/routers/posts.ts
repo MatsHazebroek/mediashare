@@ -30,28 +30,7 @@ export const postRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const returnSelect = getAllPostsSelector(ctx);
-      let dataToReturn:
-        | {
-            _count: { Like: number; Comment: number };
-            id: string;
-            text: string;
-            image: string | null;
-            createdAt: Date;
-            updatedAt: Date;
-            Like: { date: Date }[];
-            ReplyingTo?: {
-              commentId: string;
-              username: string | null;
-            };
-            User: {
-              id: string;
-              username: string | null;
-              _count: { followers: number; following: number };
-              description: string | null;
-              image: string | null;
-            };
-          }[]
-        | undefined = undefined;
+      let dataToReturn: PostType[] | undefined = undefined;
       // get the comments of a specific post
       if (input.postId)
         dataToReturn = await ctx.prisma.comment
@@ -236,14 +215,13 @@ export const postRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const returnSelect = getAllPostsSelector(ctx);
       return await ctx.prisma.post.create({
         data: {
           text: input.text,
           userId: ctx.session.user.id,
         },
-        select: {
-          id: true,
-        },
+        select: returnSelect,
       });
     }),
   update: protectedProcedure
