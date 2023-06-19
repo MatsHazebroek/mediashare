@@ -5,7 +5,6 @@ import { UserIcon } from "./userIcon";
 
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import Auth from "../auth";
 import Like from "./likesCount";
 import Comments from "../form/commentModal";
 import { useSession } from "next-auth/react";
@@ -131,39 +130,34 @@ export const Posts = (props: props) => {
               ></Image>
             ) : null}
           </Link>
-          <Auth>
-            <div className="flex gap-3">
-              <Like
-                isLiked={post.Like.length > 0}
-                onClick={() => {
-                  submit(post.id);
-                }}
-                howManyLikes={post._count.Like}
-              />
+          <div className="flex gap-3">
+            <Like
+              isLiked={post.Like.length > 0}
+              onClick={() => {
+                submit(post.id);
+              }}
+              howManyLikes={post._count.Like}
+            />
 
-              <Comments
-                postId={post.id}
-                howManyComments={post._count.Comment}
-              />
+            <Comments postId={post.id} howManyComments={post._count.Comment} />
 
-              {session?.user.role === "ADMIN" ? (
-                <div className="mt-1 flex gap-1">
-                  <button
-                    className="flex items-center justify-center focus:outline-none"
-                    title="Delete"
-                  >
-                    <DeleteModal
-                      onClick={() => {
-                        submitDelete(post.id);
-                      }}
-                    />
-                  </button>
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          </Auth>
+            {session?.user.role === "ADMIN" ? (
+              <div className="mt-1 flex gap-1">
+                <button
+                  className="flex items-center justify-center focus:outline-none"
+                  title="Delete"
+                >
+                  <DeleteModal
+                    onClick={() => {
+                      submitDelete(post.id);
+                    }}
+                  />
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
       ))}
     </div>

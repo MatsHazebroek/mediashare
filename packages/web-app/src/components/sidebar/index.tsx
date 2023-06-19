@@ -25,7 +25,7 @@ const Index = (props: props) => {
         <div className=" hidden min-h-screen flex-row  lg:flex">
           <div className="flex w-80 flex-col overflow-hidden bg-white">
             <div className="flex h-20 items-center justify-center">
-              <h1 className="text-3xl uppercase text-indigo-500">Logo</h1>
+              <h1 className="text-3xl">Mediashare</h1>
             </div>
             <ul className="flex flex-col py-4">
               <li>
