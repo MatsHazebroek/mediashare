@@ -84,7 +84,9 @@ export const Posts = (props: props) => {
               return (
                 <Post
                   post={post.post}
-                  onDelete={(postId) => deletePost.mutate({ post: postId })}
+                  onDelete={(postId) => {
+                    deletePost.mutate({ post: postId });
+                  }}
                   onLike={(postId) => postLikes.mutate({ post: postId })}
                   key={post.post.id}
                 />

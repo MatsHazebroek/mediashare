@@ -7,6 +7,7 @@ import Like from "./likesCount";
 import Comments from "../form/commentModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
+import { useState } from "react";
 type props = {
   post: PostType;
 
@@ -15,6 +16,8 @@ type props = {
 };
 export const Post = (props: props) => {
   const { data: session } = useSession();
+  const [isDeleted, setIsDeleted] = useState(false);
+  if (isDeleted) return null;
   return (
     <div className="mb-3 rounded border border-gray-200 p-4 shadow-md transition-colors duration-300 hover:bg-gray-200">
       {props.post.ReplyingTo?.commentId && props.post.ReplyingTo?.username && (
@@ -86,6 +89,7 @@ export const Post = (props: props) => {
               >
                 <DeleteModal
                   onClick={() => {
+                    setIsDeleted(true);
                     if (props.onDelete) props.onDelete(props.post.id);
                   }}
                 />
