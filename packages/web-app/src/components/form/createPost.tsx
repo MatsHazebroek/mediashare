@@ -13,9 +13,13 @@ import { useCookies } from "react-cookie";
 import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { AiOutlinePicture } from "react-icons/ai";
+import { useAtom } from "jotai";
+import { newPostAtom } from "~/atoms/newPost";
 
 export const CreatePost = () => {
   const { data: session } = useSession();
+  const [, setNewPost] = useAtom(newPostAtom);
+  const [response, setResponse] = useState<PostType | null>(null);
   const startUploadRef = useRef<(() => void) | null>(null); // This is a hack to get around the fact that UploadButton doesn't have a prop for this
   const textArea = useRef<HTMLTextAreaElement>(null); // To clean up the textarea after posting
   const [message, setMessage] = useDebouncedState("", 200); // Debounce the message so we don't re-render too much
@@ -35,15 +39,18 @@ export const CreatePost = () => {
     },
     onSuccess: (res) => {
       // if we have files, set the post ID cookie and start the upload (UploadThing will handle the rest)
-      if (howManyFiles > 0) {
+      if (howManyFiles > 0 && startUploadRef.current) {
         setCookies("post", res.id, {
           secure: true,
           sameSite: "strict",
           path: "/",
         });
-        if (startUploadRef.current) return startUploadRef.current();
+        setResponse(res);
+        return startUploadRef.current();
       }
       toast.success("Post created!", { id: "createPost", duration: 2000 });
+      // display newly created posts
+      setNewPost({ post: res, type: "tweet" });
       setMessage("");
     },
   });
@@ -93,10 +100,16 @@ export const CreatePost = () => {
       <UploadButton<OurFileRouter>
         endpoint="postUploader"
         startUpload={handleStartUpload}
-        onClientUploadComplete={() => {
+        onClientUploadComplete={(file) => {
           // Do something with the response
           removeCookies("post");
           toast.success("Post created!", { id: "createPost", duration: 2000 });
+          // display newly created posts
+          if (response && file)
+            setNewPost({
+              post: { ...response, image: file[0]?.fileUrl ?? null },
+              type: "tweet",
+            });
           setMessage("");
         }}
         onUploadError={(error: Error) => {

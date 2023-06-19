@@ -1,11 +1,13 @@
 import { useDebouncedState } from "@mantine/hooks";
 import { UploadButton } from "@uploadthing/react";
+import { useAtom } from "jotai";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import toast from "react-hot-toast";
 import { AiOutlinePicture } from "react-icons/ai";
+import { newPostAtom } from "~/atoms/newPost";
 import type { OurFileRouter } from "~/server/uploadthing";
 import { api } from "~/utils/api";
 
@@ -16,6 +18,8 @@ export const CreateComent = (props: {
   const [howManyComments, setHowMannyComments] = useState(
     props.howManyComments
   );
+  const [, setNewPost] = useAtom(newPostAtom);
+  const [response, setResponse] = useState<PostType | null>(null);
   const startUploadRef = useRef<(() => void) | null>(null); // This is a hack to get around the fact that UploadButton doesn't have a prop for this
   const textArea = useRef<HTMLTextAreaElement>(null); // To clean up the textarea after posting
   const [message, setMessage] = useDebouncedState("", 200); // Debounce the message so we don't re-render too much
@@ -42,9 +46,22 @@ export const CreateComent = (props: {
           sameSite: "strict",
           path: "/",
         });
+        setResponse({
+          ...res,
+          _count: { Comment: 0, Like: 0 },
+          Like: [],
+        });
         if (startUploadRef.current) return startUploadRef.current();
       }
       toast.success("Comment placed!", { id: "createPost", duration: 2000 });
+      setNewPost({
+        post: {
+          ...res,
+          _count: { Comment: 0, Like: 0 },
+          Like: [],
+        },
+        type: "comment",
+      });
       setMessage("");
       setHowMannyComments(howManyComments + 1);
     },
@@ -98,6 +115,15 @@ export const CreateComent = (props: {
               duration: 2000,
             });
             setMessage("");
+            if (response)
+              setNewPost({
+                post: {
+                  ...response,
+                  _count: { Comment: 0, Like: 0 },
+                  Like: [],
+                },
+                type: "comment",
+              });
             setHowMannyComments(howManyComments + 1);
           }}
           onUploadError={(error: Error) => {
