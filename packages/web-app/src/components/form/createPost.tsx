@@ -15,6 +15,7 @@ import { toast } from "react-hot-toast";
 import { AiOutlinePicture } from "react-icons/ai";
 import { useAtom } from "jotai";
 import { newPostAtom } from "~/atoms/newPost";
+import type { PostType } from "~/types/postType";
 
 export const CreatePost = () => {
   const { data: session } = useSession();

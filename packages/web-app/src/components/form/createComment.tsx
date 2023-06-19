@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { AiOutlinePicture } from "react-icons/ai";
 import { newPostAtom } from "~/atoms/newPost";
 import type { OurFileRouter } from "~/server/uploadthing";
+import type { PostType } from "~/types/postType";
 import { api } from "~/utils/api";
 
 export const CreateComent = (props: {

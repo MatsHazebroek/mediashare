@@ -10,6 +10,7 @@ import {
 import { userPostsHandler } from "./handlers/userPosts";
 import { utapi } from "uploadthing/server";
 import { getAllPostsSelector } from "./selectors/getAllPosts";
+import type { PostType } from "~/types/postType";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure

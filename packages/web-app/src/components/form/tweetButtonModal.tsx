@@ -12,6 +12,7 @@ import { UploadButton } from "@uploadthing/react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { useAtom } from "jotai";
 import { newPostAtom } from "~/atoms/newPost";
+import type { PostType } from "~/types/postType";
 
 const Index = () => {
   const { data: session } = useSession();
