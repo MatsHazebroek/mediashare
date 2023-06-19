@@ -2,8 +2,7 @@ import Link from "next/link";
 import { UserIcon } from "./userIcon";
 import { timeSince } from "./formatTime";
 import Image from "next/image";
-import Auth from "../auth";
-import Like from "./likesCount";
+import Like from "./likeButton";
 import Comments from "../form/commentModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
@@ -66,40 +65,39 @@ export const Post = (props: props) => {
           ></Image>
         ) : null}
       </Link>
-      <Auth>
-        <div className="flex gap-3">
-          <Like
-            isLiked={props.post.Like.length > 0}
-            onClick={() => {
-              if (props.onLike) props.onLike(props.post.id);
-            }}
-            howManyLikes={props.post._count.Like}
-          />
 
-          <Comments
-            postId={props.post.id}
-            howManyComments={props.post._count.Comment}
-          />
+      <div className="flex gap-3">
+        <Like
+          isLiked={props.post.Like.length > 0}
+          onClick={() => {
+            if (props.onLike) props.onLike(props.post.id);
+          }}
+          howManyLikes={props.post._count.Like}
+          disabled={session?.user?.id === undefined}
+        />
 
-          {session?.user.role === "ADMIN" ? (
-            <div className="mt-1 flex gap-1">
-              <button
-                className="flex items-center justify-center focus:outline-none"
-                title="Delete"
-              >
-                <DeleteModal
-                  onClick={() => {
-                    setIsDeleted(true);
-                    if (props.onDelete) props.onDelete(props.post.id);
-                  }}
-                />
-              </button>
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
-      </Auth>
+        <Comments
+          postId={props.post.id}
+          howManyComments={props.post._count.Comment}
+          disabled={session?.user?.id === undefined}
+        />
+
+        {session?.user.role === "ADMIN" && (
+          <div className="mt-1 flex gap-1">
+            <button
+              className="flex items-center justify-center focus:outline-none"
+              title="Delete"
+            >
+              <DeleteModal
+                onClick={() => {
+                  setIsDeleted(true);
+                  if (props.onDelete) props.onDelete(props.post.id);
+                }}
+              />
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,10 +1,11 @@
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 const Likes = (props: {
   isLiked: boolean;
   howManyLikes: number;
+  disabled?: boolean;
   onClick?: () => void;
 }) => {
   const { status } = useSession();
@@ -17,15 +18,8 @@ const Likes = (props: {
         <button
           className="flex items-center justify-center focus:outline-none"
           onClick={() => {
-            if (status == "unauthenticated")
-              return void (async () => {
-                await signIn("google", {
-                  redirect: true,
-                  callbackUrl: "/",
-                }).catch(() => {
-                  return;
-                });
-              })();
+            if (props.disabled) return;
+
             if (isLiked) setHowManyLikes(howManyLikes - 1);
             if (!isLiked) setHowManyLikes(howManyLikes + 1);
             setIsLiked(!isLiked);
@@ -38,7 +32,11 @@ const Likes = (props: {
               <AiFillHeart className="h-5 w-5 text-red-500" />
             </div>
           ) : (
-            <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-red-300">
+            <div
+              className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 ${
+                props.disabled == false ? "hover:bg-red-300" : "cursor-default"
+              }`}
+            >
               <AiOutlineHeart className="h-5 w-5" />
             </div>
           )}

@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 import Auth from "~/components/auth";
-import Like from "~/components/posts/likesCount";
+import Like from "~/components/posts/likeButton";
 import Comments from "~/components/form/commentModal";
 import { UserIcon } from "~/components/posts/userIcon";
 import { timeSince } from "~/components/posts/formatTime";
