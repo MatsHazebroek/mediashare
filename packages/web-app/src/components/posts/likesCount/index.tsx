@@ -1,3 +1,4 @@
+import { signIn, useSession } from "next-auth/react";
 import { useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
@@ -6,6 +7,7 @@ const Likes = (props: {
   howManyLikes: number;
   onClick?: () => void;
 }) => {
+  const { status } = useSession();
   const [isLiked, setIsLiked] = useState(props.isLiked);
   const [howManyLikes, setHowManyLikes] = useState(props.howManyLikes);
 
@@ -15,6 +17,15 @@ const Likes = (props: {
         <button
           className="flex items-center justify-center focus:outline-none"
           onClick={() => {
+            if (status == "unauthenticated")
+              return void (async () => {
+                await signIn("google", {
+                  redirect: true,
+                  callbackUrl: "/",
+                }).catch(() => {
+                  return;
+                });
+              })();
             if (isLiked) setHowManyLikes(howManyLikes - 1);
             if (!isLiked) setHowManyLikes(howManyLikes + 1);
             setIsLiked(!isLiked);
