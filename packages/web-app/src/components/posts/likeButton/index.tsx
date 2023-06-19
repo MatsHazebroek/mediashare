@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
@@ -8,7 +7,6 @@ const Likes = (props: {
   disabled?: boolean;
   onClick?: () => void;
 }) => {
-  const { status } = useSession();
   const [isLiked, setIsLiked] = useState(props.isLiked);
   const [howManyLikes, setHowManyLikes] = useState(props.howManyLikes);
 
