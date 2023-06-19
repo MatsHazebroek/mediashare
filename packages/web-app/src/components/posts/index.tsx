@@ -104,6 +104,7 @@ export const Posts = (props: props) => {
             onLike={(postId) => postLikes.mutate({ post: postId })}
             onDelete={(postId) => deletePost.mutate({ post: postId })}
           />
+
         </div>
       ))}
     </div>
