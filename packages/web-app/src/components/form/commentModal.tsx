@@ -1,8 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
-
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-
 import { useRef, useState } from "react";
 import { BiComment } from "react-icons/bi";
 import { useCookies } from "react-cookie";
@@ -15,8 +13,8 @@ import type { OurFileRouter } from "~/server/uploadthing";
 import { UploadButton } from "@uploadthing/react";
 import { useDebouncedState } from "@mantine/hooks";
 import { Cross2Icon } from "@radix-ui/react-icons";
-
-const Comment = (props: { howManyComments: number; postId: string }) => {
+type props = { howManyComments: number; postId: string; disabled?: boolean };
+const Comment = (props: props) => {
   const [howManyComments, setHowMannyComments] = useState(
     props.howManyComments
   );
@@ -63,16 +61,22 @@ const Comment = (props: { howManyComments: number; postId: string }) => {
   return (
     <>
       <Dialog.Root>
-        <Dialog.Trigger asChild>
+        <Dialog.Trigger disabled={props.disabled}>
           <div className="mt-1 flex gap-1">
-            <button
+            <div
               title="Comment"
-              className="flex items-center justify-center transition-colors duration-300 focus:outline-none"
+              className={`flex  items-center justify-center transition-colors duration-300 focus:outline-none ${
+                props.disabled ? "cursor-default" : "cursor-pointer "
+              }`}
             >
-              <div className="flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 hover:bg-blue-200">
+              <div
+                className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors duration-200 ${
+                  props.disabled ? "" : "hover:bg-blue-200"
+                }`}
+              >
                 <BiComment></BiComment>
               </div>
-            </button>
+            </div>
             <span className="flex items-center justify-center">
               {howManyComments}
             </span>
