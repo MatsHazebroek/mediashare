@@ -1,4 +1,4 @@
-type PostType = {
+export type PostType = {
   _count: { Like: number; Comment: number };
   id: string;
   text: string;

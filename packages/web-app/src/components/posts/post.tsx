@@ -7,6 +7,7 @@ import Comments from "../form/commentModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 import { useState } from "react";
+import type { PostType } from "~/types/postType";
 type props = {
   post: PostType;
 
