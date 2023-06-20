@@ -18,6 +18,8 @@ export const Post = (props: props) => {
   const { data: session } = useSession();
   const [isDeleted, setIsDeleted] = useState(false);
   if (isDeleted) return null;
+  console.log(props.post.Like, props.post._count.Like);
+
   return (
     <div className="mb-3 rounded border border-gray-200 p-4 shadow-md transition-colors duration-300 hover:bg-gray-200">
       {props.post.ReplyingTo?.commentId && props.post.ReplyingTo?.username && (
@@ -82,8 +84,7 @@ export const Post = (props: props) => {
           howManyComments={props.post._count.Comment}
           disabled={session?.user?.id === undefined}
         />
-
-        {session?.user.role === "ADMIN" && (
+        {session?.user.id === props.post.User.id && (
           <div className="mt-1 flex gap-1">
             <button
               className="flex items-center justify-center focus:outline-none"

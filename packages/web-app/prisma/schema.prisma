@@ -14,19 +14,25 @@ datasource db {
 }
 
 model Post {
-    id        String   @id @default(cuid())
-    text      String   @db.Text
+    id        String      @id @default(cuid())
+    text      String      @db.Text
     image     String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @default(now())
     Like      Like[]
-    User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    User      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String
+    status    Post_Status @default(ACTIVE)
 
     Comment Comment[] @relation("main")
     Reply   Comment[] @relation("reply")
 
     @@index([userId])
+}
+
+enum Post_Status {
+    ACTIVE
+    REMOVED
 }
 
 model Like {

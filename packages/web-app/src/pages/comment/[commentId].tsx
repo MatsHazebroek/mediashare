@@ -28,11 +28,12 @@ function Comment() {
         ) : (
           <>
             <MainPost post={post.data} />
-
-            <CreateComent
-              howManyComments={post.data._count.Comment}
-              postId={post.data.id}
-            />
+            {post.data.status == "ACTIVE" && (
+              <CreateComent
+                howManyComments={post.data._count.Comment}
+                postId={post.data.id}
+              />
+            )}
           </>
         )}
         <Posts disableLoading={true} mainPostId={params.commentId}></Posts>
