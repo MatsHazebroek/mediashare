@@ -209,6 +209,7 @@ export const postRouter = createTRPCRouter({
           },
         })
         .then((post) => {
+          // if the post is banned or removed, return an empty post
           if (post.User.status === "BANNED" || post.status === "REMOVED")
             return {
               ...post,
@@ -291,10 +292,18 @@ export const postRouter = createTRPCRouter({
   delete: protectedProcedure
     .input(z.object({ post: z.string().cuid2() }))
     .mutation(async ({ ctx, input }) => {
+      // check if post exists for the user (or if user is admin)
       const post = await ctx.prisma.post
         .findFirstOrThrow({
           where: {
             id: input.post,
+          },
+          include: {
+            _count: {
+              select: {
+                Comment: true,
+              },
+            },
           },
         })
         .then((post) => {
@@ -308,12 +317,22 @@ export const postRouter = createTRPCRouter({
             });
           return post;
         });
+      // delete image from uploadthing
       if (post.image) {
         const url = new URL(post.image);
         const imageId = post.image.split("/")[post.image.split("/").length - 1];
         if (imageId && imageId.includes(".") && url.host == "uploadthing.com")
           utapi.deleteFiles(imageId).catch(console.log);
       }
+      // if post has no comments, delete it
+      if (post._count.Comment < 1)
+        return await ctx.prisma.post.delete({
+          where: {
+            id: input.post,
+          },
+        });
+
+      // if post has comments, remove it with status REMOVED
       return await ctx.prisma.post.update({
         where: {
           id: input.post,
