@@ -21,7 +21,10 @@ export const userPostsHandler = async (
     // get all posts of a specific user that the current user liked
     return await ctx.prisma.like
       .findMany({
-        where: { userId: userId, user: { status: "ACTIVE" } },
+        where: {
+          userId: userId,
+          user: { status: "ACTIVE", posts: { every: { status: "ACTIVE" } } },
+        },
         select: {
           post: {
             select: {
@@ -89,6 +92,7 @@ export const userPostsHandler = async (
       where: {
         userId: userId,
         image: { not: null },
+        status: "ACTIVE",
         User: {
           status: "ACTIVE",
         },
@@ -127,6 +131,7 @@ export const userPostsHandler = async (
     },
     where: {
       userId: userId,
+      status: "ACTIVE",
       User: {
         status: "ACTIVE",
       },

@@ -11,10 +11,12 @@ import { timeSince } from "~/components/posts/formatTime";
 import DeleteModal from "~/components/posts/deleteModal";
 
 import { api } from "~/utils/api";
+import type { Post_Status } from "@prisma/client";
 
 type props = {
   post: {
     id: string;
+    status: Post_Status;
     User: {
       status: undefined;
       image: string | null;
@@ -65,6 +67,12 @@ export const MainPost = (props: props) => {
   const submitDelete = (postId: string) => {
     deletePost.mutate({ post: postId });
   };
+  if (props.post.status === "REMOVED")
+    return (
+      <div>
+        <p className="text-center text-red-500">Verwijderd</p>
+      </div>
+    );
   return (
     <div
       key={props.post.id + "pst"}

@@ -11,6 +11,7 @@ import { userPostsHandler } from "./handlers/userPosts";
 import { utapi } from "uploadthing/server";
 import { getAllPostsSelector } from "./selectors/getAllPosts";
 import type { PostType } from "~/types/postType";
+import { Post_Status } from "@prisma/client";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure
@@ -37,8 +38,12 @@ export const postRouter = createTRPCRouter({
         dataToReturn = await ctx.prisma.comment
           .findMany({
             where: {
-              main: { User: { status: "ACTIVE" }, id: input.postId },
-              reply: { User: { status: "ACTIVE" } },
+              main: {
+                status: "ACTIVE",
+                User: { status: "ACTIVE" },
+                id: input.postId,
+              },
+              reply: { status: "ACTIVE", User: { status: "ACTIVE" } },
             },
             select: {
               // the username of the user that is being replied to
@@ -110,6 +115,7 @@ export const postRouter = createTRPCRouter({
           orderBy: { createdAt: "desc" },
           select: returnSelect,
           where: {
+            status: "ACTIVE",
             User: {
               followers: {
                 some: {
@@ -130,6 +136,7 @@ export const postRouter = createTRPCRouter({
           orderBy: { createdAt: "desc" },
           select: returnSelect,
           where: {
+            status: "ACTIVE",
             User: {
               status: "ACTIVE",
             },
@@ -167,6 +174,7 @@ export const postRouter = createTRPCRouter({
             image: true,
             createdAt: true,
             updatedAt: true,
+            status: true,
             Like: {
               select: {
                 date: true,
@@ -201,12 +209,19 @@ export const postRouter = createTRPCRouter({
           },
         })
         .then((post) => {
-          if (post.User.status === "BANNED")
-            throw new TRPCError({
-              code: "NOT_FOUND",
-              message: "Post not found",
-            });
-          return { ...post, User: { ...post.User, status: undefined } };
+          if (post.User.status === "BANNED" || post.status === "REMOVED")
+            return {
+              ...post,
+              image: "",
+              text: "",
+              status: "REMOVED" as Post_Status,
+              User: { ...post.User, status: undefined },
+            };
+          return {
+            ...post,
+            status: "ACTIVE" as Post_Status,
+            User: { ...post.User, status: undefined },
+          };
         });
     }),
   create: protectedProcedure
@@ -278,7 +293,9 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const post = await ctx.prisma.post
         .findFirstOrThrow({
-          where: { id: input.post },
+          where: {
+            id: input.post,
+          },
         })
         .then((post) => {
           if (
@@ -297,9 +314,15 @@ export const postRouter = createTRPCRouter({
         if (imageId && imageId.includes(".") && url.host == "uploadthing.com")
           utapi.deleteFiles(imageId).catch(console.log);
       }
-      return await ctx.prisma.post.delete({
+      return await ctx.prisma.post.update({
         where: {
           id: input.post,
+        },
+        data: {
+          status: "REMOVED",
+          image: null,
+          text: "",
+          Like: { deleteMany: { postId: input.post } },
         },
       });
     }),
@@ -329,6 +352,8 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
+      if (post.status == "REMOVED")
+        throw new TRPCError({ code: "BAD_REQUEST", message: "Post not found" });
       const comment = await ctx.prisma.comment.create({
         data: {
           mainId: input.post,
