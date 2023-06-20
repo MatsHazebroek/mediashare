@@ -84,7 +84,8 @@ export const Post = (props: props) => {
           howManyComments={props.post._count.Comment}
           disabled={session?.user?.id === undefined}
         />
-        {session?.user.id === props.post.User.id && (
+        {(session?.user.id === props.post.User.id ||
+          session?.user.role === "ADMIN") && (
           <div className="mt-1 flex gap-1">
             <button
               className="flex items-center justify-center focus:outline-none"
