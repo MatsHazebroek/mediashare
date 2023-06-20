@@ -116,37 +116,36 @@ export const MainPost = (props: props) => {
           alt={"Foto"}
         ></Image>
       ) : null}
-      <Auth>
-        <div className="flex gap-3">
-          <Like
-            isLiked={props.post.Like.length > 0}
-            onClick={() => {
-              postLikes.mutate({ post: props.post.id });
-            }}
-            howManyLikes={props.post._count.Like}
-          />
-          <Comments
-            postId={props.post.id}
-            howManyComments={props.post._count.Comment}
-          />
-          {session?.user.role === "ADMIN" ? (
-            <div className="mt-1 flex gap-1">
-              <button
-                className="flex items-center justify-center focus:outline-none"
-                title="Delete"
-              >
-                <DeleteModal
-                  onClick={() => {
-                    submitDelete(props.post.id);
-                  }}
-                />
-              </button>
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
-      </Auth>
+
+      <div className="flex gap-3">
+        <Like
+          isLiked={props.post.Like.length > 0}
+          onClick={() => {
+            postLikes.mutate({ post: props.post.id });
+          }}
+          howManyLikes={props.post._count.Like}
+          disabled={session?.user?.id === undefined}
+        />
+        <Comments
+          postId={props.post.id}
+          howManyComments={props.post._count.Comment}
+          disabled={session?.user?.id === undefined}
+        />
+        {session?.user.role === "ADMIN" && (
+          <div className="mt-1 flex gap-1">
+            <button
+              className="flex items-center justify-center focus:outline-none"
+              title="Delete"
+            >
+              <DeleteModal
+                onClick={() => {
+                  submitDelete(props.post.id);
+                }}
+              />
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
