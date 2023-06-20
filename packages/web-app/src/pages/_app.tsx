@@ -20,8 +20,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <Toaster />
         <NotCompletedRegistration>
           <Sidebar>
-            <Component {...pageProps} />
-            <div className="h-10 w-full lg:h-0"></div>
+            <>
+              <Component {...pageProps} />
+              <div className="h-10 w-full lg:h-0"></div>
+            </>
           </Sidebar>
         </NotCompletedRegistration>
       </Provider>
