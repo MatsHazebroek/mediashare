@@ -241,7 +241,10 @@ const Index = (props: props) => {
           </div>
         </div>
 
-        <div className="h-screen flex-grow overflow-auto">{props.children}</div>
+        <div className="h-screen flex-grow overflow-auto">
+          {props.children}
+          <div className="h-10 w-full lg:h-0"></div>
+        </div>
       </div>
     </>
   );
