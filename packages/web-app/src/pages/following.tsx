@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import Auth from "~/components/auth";
 import { Posts } from "~/components/posts";
 const PageContent: NextPage = () => {
   return (
@@ -11,7 +12,10 @@ const PageContent: NextPage = () => {
       </Head>
       <main>
         <div className="m-2 bg-white p-4 shadow-md">
-          <div className="mt-4 border-t border-gray-200 pt-4">
+          <Auth>
+            <div className="mt-4 border-t border-gray-200 pt-4"></div>
+          </Auth>
+          <div>
             <Posts yourFollwing={true} />
           </div>
         </div>

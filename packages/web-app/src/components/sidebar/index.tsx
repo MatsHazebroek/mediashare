@@ -25,7 +25,7 @@ const Index = (props: props) => {
         <div className=" hidden min-h-screen flex-row  lg:flex">
           <div className="flex w-80 flex-col overflow-hidden bg-white">
             <div className="flex h-20 items-center justify-center">
-              <h1 className="text-3xl">Mediashare</h1>
+              <h1 className="text-3xl font-bold">Mediashare</h1>
             </div>
             <ul className="flex flex-col py-4">
               <li>
@@ -88,25 +88,24 @@ const Index = (props: props) => {
                       <Link
                         href="#"
                         className="mx-auto mb-12 flex h-12 w-52 transform flex-row items-center rounded text-gray-500 transition-colors duration-300 hover:bg-gray-200 hover:text-gray-800"
+                        onClick={() => {
+                          void (async () => {
+                            await signIn("google", {
+                              redirect: true,
+                              callbackUrl: "/",
+                            }).catch(() => {
+                              return;
+                            });
+                          })();
+                        }}
                       >
                         <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
-                          <i className="bx bx-log-in"></i>
+                          <RiLoginCircleLine
+                            size={25}
+                            className=" text-gray-500 group-hover:text-blue-600"
+                          />
                         </span>
-                        <span
-                          className="text-lg font-medium"
-                          onClick={() => {
-                            void (async () => {
-                              await signIn("google", {
-                                redirect: true,
-                                callbackUrl: "/",
-                              }).catch(() => {
-                                return;
-                              });
-                            })();
-                          }}
-                        >
-                          Inloggen
-                        </span>
+                        <span className="text-lg font-medium">Inloggen</span>
                       </Link>
                     </>
                   ) : (

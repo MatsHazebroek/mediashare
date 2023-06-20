@@ -15,9 +15,11 @@ const PageContent: NextPage = () => {
         <div className="m-2 bg-white p-4 shadow-md">
           <Auth>
             <CreatePost />
+
+            <div className="mt-4 border-t border-gray-200 pt-4 "></div>
           </Auth>
 
-          <div className="mt-4 border-t border-gray-200 pt-4">
+          <div>
             <Posts />
           </div>
         </div>
