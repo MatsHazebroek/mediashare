@@ -1,9 +1,11 @@
 import { useDebouncedState } from "@mantine/hooks";
 import type { Session } from "next-auth";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 
 const Form = (props: { session: Session | null; onSuccess: () => void }) => {
+  const router = useRouter();
   const [username, setUsername] = useDebouncedState<undefined | string>(
     undefined,
     200
@@ -26,6 +28,7 @@ const Form = (props: { session: Session | null; onSuccess: () => void }) => {
       toast.success("Registratie voltooid", {
         id: "complete-registration",
       });
+      router.reload();
       props.onSuccess();
     },
   });
@@ -78,7 +81,7 @@ const Form = (props: { session: Session | null; onSuccess: () => void }) => {
       <div>
         <button
           className="rounded-md bg-blue-500 px-4 py-2 text-lg font-semibold text-white shadow-sm hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
-          onClick={() => submit()}
+          onClick={submit}
         >
           Voltooi registratie
         </button>

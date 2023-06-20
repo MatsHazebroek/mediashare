@@ -124,7 +124,7 @@ const PageContent: NextPage = () => {
                 </div>
                 <div className="flex flex-wrap items-center justify-end">
                   {status == "authenticated" &&
-                    session?.user.name != users.data?.username && (
+                    session?.user.id != users.data?.id && (
                       <ProfileFollow
                         hasFollowed={
                           users.data?.followers.some(
@@ -135,7 +135,7 @@ const PageContent: NextPage = () => {
                       />
                     )}
                   {users.isSuccess &&
-                    (session?.user.name == users.data.username ||
+                    (session?.user.id == users.data.id ||
                       session?.user.role == "ADMIN") && (
                       <EditProfileModal user={users.data} />
                     )}
