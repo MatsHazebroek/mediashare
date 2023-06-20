@@ -14,6 +14,7 @@ type props = {
   };
   yourFollwing?: boolean;
   mainPostId?: string;
+  disableLoading?: boolean;
 };
 
 export const Posts = (props: props) => {
@@ -52,12 +53,8 @@ export const Posts = (props: props) => {
   }, [entry]);
 
   // loading
-  if (posts.isLoading)
-    return (
-      <>
-        <Loading />
-      </>
-    );
+  if (posts.isLoading && props.disableLoading) return null;
+  if (posts.isLoading) return <Loading />;
   // error
   if (posts.isError) return <div>Error: {posts.error.message}</div>;
   // pages to one array
@@ -104,7 +101,6 @@ export const Posts = (props: props) => {
             onLike={(postId) => postLikes.mutate({ post: postId })}
             onDelete={(postId) => deletePost.mutate({ post: postId })}
           />
-
         </div>
       ))}
     </div>

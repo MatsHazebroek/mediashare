@@ -35,7 +35,7 @@ function Comment() {
             />
           </>
         )}
-        <Posts mainPostId={params.commentId}></Posts>
+        <Posts disableLoading={true} mainPostId={params.commentId}></Posts>
       </main>
     </>
   );
