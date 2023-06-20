@@ -11,7 +11,7 @@ import { userPostsHandler } from "./handlers/userPosts";
 import { utapi } from "uploadthing/server";
 import { getAllPostsSelector } from "./selectors/getAllPosts";
 import type { PostType } from "~/types/postType";
-import { Post_Status } from "@prisma/client";
+import type { Post_Status } from "@prisma/client";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure
