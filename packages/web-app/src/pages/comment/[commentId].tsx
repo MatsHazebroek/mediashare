@@ -33,9 +33,9 @@ function Comment() {
               howManyComments={post.data._count.Comment}
               postId={post.data.id}
             />
-            <Posts mainPostId={post.data.id}></Posts>
           </>
         )}
+        <Posts mainPostId={params.commentId}></Posts>
       </main>
     </>
   );
