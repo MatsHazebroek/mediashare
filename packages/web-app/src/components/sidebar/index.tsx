@@ -1,6 +1,6 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import React from "react";
+import React, { type ReactNode } from "react";
 import Auth from "../auth";
 import Modal from "../form/tweetButtonModal";
 import DropDownMenu from "../dropdownmenu";
@@ -15,9 +15,9 @@ import {
 import { SlUserFollowing } from "react-icons/sl";
 
 type props = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
-const Index = (props: props) => {
+const Index: React.FC<props> = (props) => {
   const { status, data: session } = useSession();
   return (
     <>
