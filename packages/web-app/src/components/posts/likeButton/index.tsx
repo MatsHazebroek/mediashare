@@ -25,7 +25,7 @@ const Likes = (props: {
           }}
           title={"Like"}
         >
-          {isLiked ? (
+          {isLiked && !props.disabled ? (
             <div className="flex h-7 w-7 items-center justify-center">
               <AiFillHeart className="h-5 w-5 text-red-500" />
             </div>
