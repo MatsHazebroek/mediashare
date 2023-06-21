@@ -132,26 +132,28 @@ export const postRouter = createTRPCRouter({
           .then((posts) =>
             posts.map((post) => ({
               ...post,
-              ReplyingTo: post.Comment[0]
+              ReplyingTo: post.Reply[0]
                 ? {
-                    username: post.Comment[0]?.main.User.username,
-                    commentId: post.Comment[0]?.main.id,
+                    username: post.Reply[0]?.main.User.username,
+                    commentId: post.Reply[0]?.main.id,
                   }
                 : undefined,
             }))
           );
 
       // TODO: recommend posts based on user the followers that the user is following
-      // user is not logged in, get recent posts
+      // user is not logged in, get recent posts (no comments)
       if (dataToReturn === undefined)
         dataToReturn = await ctx.prisma.post.findMany({
           orderBy: { createdAt: "desc" },
           select: returnSelect,
           where: {
             status: "ACTIVE",
-            Comment: undefined,
             User: {
               status: "ACTIVE",
+            },
+            Reply: {
+              none: {},
             },
           },
           take: input.howMany + 1,

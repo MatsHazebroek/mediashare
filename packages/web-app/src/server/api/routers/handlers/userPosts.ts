@@ -35,7 +35,7 @@ export const userPostsHandler = async (
               image: true,
               createdAt: true,
               updatedAt: true,
-              Comment: {
+              Reply: {
                 select: {
                   main: {
                     select: {
@@ -76,10 +76,10 @@ export const userPostsHandler = async (
       .then((data) =>
         data.map((d) => ({
           ...d.post,
-          ReplyingTo: d.post.Comment[0]
+          ReplyingTo: d.post.Reply[0]
             ? {
-                username: d.post.Comment[0]?.main.User.username ?? null,
-                commentId: d.post.Comment[0]?.main.id,
+                username: d.post.Reply[0]?.main.User.username ?? null,
+                commentId: d.post.Reply[0]?.main.id,
               }
             : undefined,
         }))
@@ -105,7 +105,7 @@ export const userPostsHandler = async (
               userId: ctx.session?.user.id,
             },
           },
-          Comment: {
+          Reply: {
             select: {
               main: {
                 select: {
@@ -143,10 +143,10 @@ export const userPostsHandler = async (
       .then((posts) =>
         posts.map((post) => ({
           ...post,
-          ReplyingTo: post.Comment[0]
+          ReplyingTo: post.Reply[0]
             ? {
-                username: post.Comment[0]?.main.User.username ?? null,
-                commentId: post.Comment[0]?.main.id,
+                username: post.Reply[0]?.main.User.username ?? null,
+                commentId: post.Reply[0]?.main.id,
               }
             : undefined,
         }))
@@ -180,7 +180,7 @@ export const userPostsHandler = async (
             image: true,
           },
         },
-        Comment: {
+        Reply: {
           select: {
             main: {
               select: {
@@ -208,10 +208,10 @@ export const userPostsHandler = async (
     .then((posts) =>
       posts.map((post) => ({
         ...post,
-        ReplyingTo: post.Comment[0]
+        ReplyingTo: post.Reply[0]
           ? {
-              username: post.Comment[0]?.main.User.username ?? null,
-              commentId: post.Comment[0]?.main.id,
+              username: post.Reply[0]?.main.User.username ?? null,
+              commentId: post.Reply[0]?.main.id,
             }
           : undefined,
       }))

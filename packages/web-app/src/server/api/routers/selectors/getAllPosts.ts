@@ -25,7 +25,7 @@ export const getAllPostsSelector = (ctx: { session: Session | null }) => ({
       image: true,
     },
   },
-  Comment: {
+  Reply: {
     select: {
       main: {
         select: {
@@ -38,6 +38,5 @@ export const getAllPostsSelector = (ctx: { session: Session | null }) => ({
         },
       },
     },
-    limit: 1,
   },
 });
