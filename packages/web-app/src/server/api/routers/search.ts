@@ -21,7 +21,6 @@ export const searchRouter = createTRPCRouter({
         }
         const username = q.slice(q.startsWith("@") ? 1 : 5);
         if (username === "" || username === " ") return [];
-        console.log;
         return username;
       });
       // remove from query the usernames
@@ -30,7 +29,7 @@ export const searchRouter = createTRPCRouter({
         query.length,
         ...query.filter((q) => !q.startsWith("@") && !q.startsWith("from:"))
       );
-      console.log("pap", users, query);
+
       const data = await ctx.prisma.post
         .findMany({
           cursor: input.cursor ? { id: input.cursor } : undefined,

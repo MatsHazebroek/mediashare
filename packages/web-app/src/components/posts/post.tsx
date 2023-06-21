@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { UserIcon } from "./userIcon";
 import { timeSince } from "./formatTime";
-import Image from "next/image";
 import Like from "./likeButton";
 import Comments from "../form/commentModal";
 import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 import { useState } from "react";
 import type { PostType } from "~/types/postType";
+import { Lightbox } from "../lightbox";
+
 type props = {
   post: PostType;
 
@@ -18,7 +19,6 @@ export const Post = (props: props) => {
   const { data: session } = useSession();
   const [isDeleted, setIsDeleted] = useState(false);
   if (isDeleted) return null;
-  console.log(props.post.Like, props.post._count.Like);
 
   return (
     <div className="mb-3 rounded border border-gray-200 p-4 shadow-md transition-colors duration-300 hover:bg-gray-200">
@@ -60,12 +60,13 @@ export const Post = (props: props) => {
         </div>
         <p className="mb-2">{props.post.text}</p>
         {typeof props.post.image == "string" ? (
-          <Image
-            src={props.post.image}
-            height={200}
-            width={200}
-            alt={"Foto"}
-          ></Image>
+          <span onClick={(e) => e.preventDefault()} className=" z-10">
+            <Lightbox
+              imageUrl={props.post.image}
+              altText="image"
+              Thumbnail={{ height: 200, width: 200 }}
+            />
+          </span>
         ) : null}
       </Link>
 

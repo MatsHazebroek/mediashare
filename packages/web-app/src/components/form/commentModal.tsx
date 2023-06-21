@@ -13,6 +13,7 @@ import type { OurFileRouter } from "~/server/uploadthing";
 import { UploadButton } from "@uploadthing/react";
 import { useDebouncedState } from "@mantine/hooks";
 import { Cross2Icon } from "@radix-ui/react-icons";
+
 type props = { howManyComments: number; postId: string; disabled?: boolean };
 const Comment = (props: props) => {
   const [howManyComments, setHowMannyComments] = useState(
