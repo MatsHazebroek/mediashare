@@ -143,7 +143,7 @@ const InputElement = (props: props) => {
         onClick={() => searchQuery.length > 3 && setShowSuggestions(true)}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      {showSuggestions && searchQuery.length > 3 && (
+      {showSuggestions && searchQuery.length >= 3 && (
         <div ref={suggestionsDivRef}>{props.children(searchQuery)}</div>
       )}
     </div>

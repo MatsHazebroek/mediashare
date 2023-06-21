@@ -5,7 +5,7 @@ export const searchRouter = createTRPCRouter({
   search: publicProcedure
     .input(
       z.object({
-        query: z.string().min(3).trim(),
+        query: z.string().min(2).trim(),
         cursor: z.string().cuid2().nullish(),
         howMany: z.number().min(1).max(10).default(5),
         /** Get the comments of the post */
@@ -36,13 +36,22 @@ export const searchRouter = createTRPCRouter({
           cursor: input.cursor ? { id: input.cursor } : undefined,
           take: input.howMany + 1,
           where: {
-            User: {
-              status: "ACTIVE",
-            },
-            text: {
-              contains: query.join(" "),
-            },
-            OR: users.map((u) => ({ User: { username: u } })),
+            AND: [
+              {
+                User: {
+                  status: "ACTIVE",
+                },
+                text: {
+                  contains: query.join(" "),
+                },
+              },
+              {
+                OR:
+                  users.length > 0
+                    ? users.map((u) => ({ User: { username: u } }))
+                    : [],
+              },
+            ],
           },
           select: {
             id: true,
