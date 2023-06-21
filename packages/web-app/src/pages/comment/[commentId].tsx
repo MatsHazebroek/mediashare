@@ -6,6 +6,7 @@ import { MainPost } from "~/components/comment";
 import { api } from "~/utils/api";
 import { CreateComent } from "~/components/form/createComment";
 import Loading from "~/components/loading";
+import Auth from "~/components/auth";
 
 type params = {
   commentId: string;
@@ -28,12 +29,12 @@ function Comment() {
         ) : (
           <>
             <MainPost post={post.data} />
-            {post.data.status == "ACTIVE" && (
+            <Auth>
               <CreateComent
                 howManyComments={post.data._count.Comment}
                 postId={post.data.id}
               />
-            )}
+            </Auth>
           </>
         )}
         <Posts disableLoading={true} mainPostId={params.commentId}></Posts>
