@@ -67,6 +67,7 @@ export const searchRouter = createTRPCRouter({
               },
             },
           },
+          orderBy: { createdAt: "desc" },
         })
         .catch(() => {
           throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
