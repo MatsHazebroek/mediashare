@@ -45,7 +45,7 @@ export const InputElement = (props: props) => {
     <div
       className={`relative mb-4 ${
         showSuggestions && searchQuery.length > 3 ? "w-1/2" : "w-1/4"
-      }  transition-width duration-100 ease-in focus-within:w-full hover:w-full md:focus-within:w-1/2 md:hover:w-1/2 `}
+      }  transition-width duration-100 ease-in focus-within:w-full hover:w-full lg:focus-within:w-1/2 lg:hover:w-1/2 `}
     >
       <input
         ref={inputRef}

@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import DeleteModal from "./deleteModal";
 import { useState } from "react";
 import type { PostType } from "~/types/postType";
+import { Lightbox } from "../lightbox";
 type props = {
   post: PostType;
 
@@ -60,12 +61,13 @@ export const Post = (props: props) => {
         </div>
         <p className="mb-2">{props.post.text}</p>
         {typeof props.post.image == "string" ? (
-          <Image
-            src={props.post.image}
-            height={200}
-            width={200}
-            alt={"Foto"}
-          ></Image>
+          <span onClick={(e) => e.preventDefault()} className=" z-10">
+            <Lightbox
+              imageUrl={props.post.image}
+              altText="image"
+              Thumbnail={{ height: 200, width: 200 }}
+            />
+          </span>
         ) : null}
       </Link>
 

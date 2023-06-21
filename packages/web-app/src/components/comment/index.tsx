@@ -12,6 +12,7 @@ import DeleteModal from "~/components/posts/deleteModal";
 
 import { api } from "~/utils/api";
 import type { Post_Status } from "@prisma/client";
+import { Lightbox } from "../lightbox";
 
 type props = {
   post: {
@@ -116,12 +117,11 @@ export const MainPost = (props: props) => {
       </div>
       <p className="mb-2">{props.post.text}</p>
       {typeof props.post.image == "string" ? (
-        <Image
-          src={props.post.image}
-          height={200}
-          width={200}
-          alt={"Foto"}
-        ></Image>
+        <Lightbox
+          imageUrl={props.post.image}
+          altText="Foto"
+          Thumbnail={{ height: 200, width: 200 }}
+        />
       ) : null}
 
       <div className="flex gap-3">
