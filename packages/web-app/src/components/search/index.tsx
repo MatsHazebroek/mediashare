@@ -54,7 +54,10 @@ const SearchBox = (props: { searchQuery: string }) => {
           ref={i === suggestions.length - 1 ? ref : undefined}
           className="cursor-pointer px-4 py-2 hover:bg-gray-100"
         >
-          <div className="left-0 flex items-center gap-2">
+          <Link
+            href={"/comment/" + suggestion.id}
+            className="left-0 flex max-w-full items-center gap-2 overflow-hidden"
+          >
             {typeof suggestion.User.image == "string" ? (
               <div>
                 <Image
@@ -80,8 +83,23 @@ const SearchBox = (props: { searchQuery: string }) => {
               </Link>
             </span>
 
-            <span className="flex-grow text-gray-400">- {suggestion.text}</span>
-          </div>
+            <span className="flex-grow text-ellipsis whitespace-nowrap text-gray-400">
+              - {suggestion.text}
+            </span>
+            {suggestion.image && (
+              <Image
+                src={suggestion.image}
+                alt={"Image"}
+                width={40}
+                height={40}
+                style={{
+                  height: 40,
+                  minHeight: 40,
+                  maxHeight: 40,
+                }}
+              ></Image>
+            )}
+          </Link>
         </div>
       ))}
     </div>
