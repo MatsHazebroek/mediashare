@@ -111,23 +111,35 @@ export const postRouter = createTRPCRouter({
 
       // get all posts of the users that the current user is following
       if (input.following && ctx.session)
-        dataToReturn = await ctx.prisma.post.findMany({
-          orderBy: { createdAt: "desc" },
-          select: returnSelect,
-          where: {
-            status: "ACTIVE",
-            User: {
-              followers: {
-                some: {
-                  userId: ctx.session.user.id,
-                },
-              },
+        dataToReturn = await ctx.prisma.post
+          .findMany({
+            orderBy: { createdAt: "desc" },
+            select: returnSelect,
+            where: {
               status: "ACTIVE",
+              User: {
+                followers: {
+                  some: {
+                    userId: ctx.session.user.id,
+                  },
+                },
+                status: "ACTIVE",
+              },
             },
-          },
-          take: input.howMany + 1,
-          cursor: input.cursor ? { id: input.cursor } : undefined,
-        });
+            take: input.howMany + 1,
+            cursor: input.cursor ? { id: input.cursor } : undefined,
+          })
+          .then((posts) =>
+            posts.map((post) => ({
+              ...post,
+              ReplyingTo: post.Comment[0]
+                ? {
+                    username: post.Comment[0]?.main.User.username,
+                    commentId: post.Comment[0]?.main.id,
+                  }
+                : undefined,
+            }))
+          );
 
       // TODO: recommend posts based on user the followers that the user is following
       // user is not logged in, get recent posts
@@ -137,6 +149,7 @@ export const postRouter = createTRPCRouter({
           select: returnSelect,
           where: {
             status: "ACTIVE",
+            Comment: undefined,
             User: {
               status: "ACTIVE",
             },

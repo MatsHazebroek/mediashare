@@ -15,6 +15,7 @@ export const getAllPostsSelector = (ctx: { session: Session | null }) => ({
       userId: ctx.session?.user.id,
     },
   },
+
   User: {
     select: {
       id: true,
@@ -23,5 +24,20 @@ export const getAllPostsSelector = (ctx: { session: Session | null }) => ({
       description: true,
       image: true,
     },
+  },
+  Comment: {
+    select: {
+      main: {
+        select: {
+          id: true,
+          User: {
+            select: {
+              username: true,
+            },
+          },
+        },
+      },
+    },
+    limit: 1,
   },
 });
