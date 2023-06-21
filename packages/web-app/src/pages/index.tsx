@@ -3,7 +3,7 @@ import Head from "next/head";
 import { CreatePost } from "~/components/form/createPost";
 import { Posts } from "~/components/posts";
 import Auth from "~/components/auth";
-import Search from "~/components/search";
+import { Search } from "~/components/search";
 
 const PageContent: NextPage = () => {
   return (
@@ -16,9 +16,7 @@ const PageContent: NextPage = () => {
       <main>
         <div className="m-2 bg-white p-4 shadow-md">
           <div className="flex items-center justify-end ">
-            <div className="w-1/4 transition-width duration-100 ease-in hover:w-full md:hover:w-1/2">
-              <Search />
-            </div>
+            <Search />
           </div>
           <Auth>
             <CreatePost />

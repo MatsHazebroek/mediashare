@@ -54,6 +54,14 @@ export const UserIcon = (props: props) => {
                 alt={props.alt || "Profile Picture of " + props.User.username}
                 width={props.width}
                 height={props.height}
+                style={{
+                  width: props.width,
+                  height: props.height,
+                  minHeight: props.height,
+                  minWidth: props.width,
+                  maxHeight: props.height,
+                  maxWidth: props.width,
+                }}
                 className={"rounded-full " + (props.className || "")}
               ></Image>
             </Link>
