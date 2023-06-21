@@ -15,10 +15,13 @@ const PageContent: NextPage = () => {
       </Head>
       <main>
         <div className="m-2 bg-white p-4 shadow-md">
+          <div className="flex items-center justify-end ">
+            <div className="w-1/4 transition-width duration-100 ease-in hover:w-full md:hover:w-1/2">
+              <Search />
+            </div>
+          </div>
           <Auth>
-            <Search />
             <CreatePost />
-
             <div className="mt-4 border-t border-gray-200 pt-4"></div>
           </Auth>
 

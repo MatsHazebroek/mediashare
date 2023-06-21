@@ -51,10 +51,14 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+
         ...mauve,
         ...violet,
         ...green,
         ...blackA,
+      },
+      transitionProperty: {
+        width: "width",
       },
       borderRadius: {
         lg: "var(--radius)",
