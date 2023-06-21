@@ -1,15 +1,11 @@
 import Link from "next/link";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
-
 import toast from "react-hot-toast";
-
 import Like from "~/components/posts/likeButton";
 import Comments from "~/components/form/commentModal";
 import { UserIcon } from "~/components/posts/userIcon";
 import { timeSince } from "~/components/posts/formatTime";
 import DeleteModal from "~/components/posts/deleteModal";
-
 import { api } from "~/utils/api";
 import type { Post_Status } from "@prisma/client";
 import { Lightbox } from "../lightbox";

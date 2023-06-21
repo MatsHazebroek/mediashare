@@ -78,7 +78,6 @@ export const ourFileRouter = {
     }),
   userImageUploader: f({ image: { maxFileCount: 1, maxFileSize: "128MB" } })
     .middleware(async (req, res) => {
-      console.log("efwij");
       const session = await getServerAuthSession({ req, res });
       if (!session || !session.user)
         throw new Error("Not logged in", { cause: "Not logged in" });

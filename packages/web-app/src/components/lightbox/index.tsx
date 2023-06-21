@@ -24,10 +24,7 @@ export const Lightbox = (props: props) => {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed left-0 top-0 z-20 h-screen w-screen">
           <div className="relative h-full w-full">
-            <Dialog.Close
-              onClick={() => console.log("ewfjwefoi")}
-              className="absolute right-0 top-0 z-50 inline-flex h-[30px] w-[30px] appearance-none items-center justify-center rounded-bl-sm bg-white transition-all hover:rounded-bl-lg lg:absolute"
-            >
+            <Dialog.Close className="absolute right-0 top-0 z-50 inline-flex h-[30px] w-[30px] appearance-none items-center justify-center rounded-bl-sm bg-white transition-all hover:rounded-bl-lg lg:absolute">
               <Cross2Icon className="h-[20px] w-[20px]" />
             </Dialog.Close>
           </div>
