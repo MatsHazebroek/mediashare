@@ -22,6 +22,13 @@ export const profileRouter = createTRPCRouter({
       if (!ctx.session || !ctx.session.user) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
+      // check if username has whitespaces
+      if (input.username.includes(" "))
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Gebruikersnaam mag geen spaties bevatten",
+        });
+
       // check if there is already a user with this username
       const searchUsername = await ctx.prisma.user.findUnique({
         where: { username: input.username },
@@ -30,7 +37,7 @@ export const profileRouter = createTRPCRouter({
       if (searchUsername) {
         throw new TRPCError({
           code: "CONFLICT",
-          message: "Username already taken",
+          message: "Gebruikersnaam is al in gebruik",
         });
       }
       // complete registration
@@ -82,14 +89,14 @@ export const profileRouter = createTRPCRouter({
         if (user.status !== "ACTIVE")
           throw new TRPCError({
             code: "NOT_FOUND",
-            message: "User not found",
+            message: "Gebruiker niet gevonden",
           });
         return { ...user, status: undefined };
       })
       .catch(() => {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "User not found",
+          message: "Gebruiker niet gevonden",
         });
       });
   }),
@@ -152,15 +159,22 @@ export const profileRouter = createTRPCRouter({
         ctx.session.user.role !== "ADMIN"
       )
         throw new TRPCError({ code: "UNAUTHORIZED" });
-        // link only https allowed
-        if(input.link) {
-          if(!input.link.startsWith("https://")) {
-            throw new TRPCError({
-              code: "BAD_REQUEST",
-              message: "Only https links allowed",
-            });
-          }
+      // link only https allowed
+      if (input.link) {
+        if (!input.link.startsWith("https://")) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Alleen https links toegestaan",
+          });
         }
+      }
+      // check if username has whitespaces
+      if (input.username && input.username.includes(" "))
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Gebruikersnaam mag geen spaties bevatten",
+        });
+
       // check if there is already a user with this username
       if (input.username) {
         const searchUsername = await ctx.prisma.user.findUnique({
@@ -170,7 +184,7 @@ export const profileRouter = createTRPCRouter({
         if (searchUsername) {
           throw new TRPCError({
             code: "CONFLICT",
-            message: "Username already taken",
+            message: "Gebruikersnaam is al in gebruik",
           });
         }
       }
