@@ -208,9 +208,7 @@ const EditProfileModal = (props: props) => {
 
             <InputField
               label="Website"
-              initialValue={
-                props.user.link ? new URL(props.user.link).hostname : ""
-              }
+              initialValue={props.user.link || ""}
               maxLength={50}
               errorMessage={""}
               isRequired={false}
