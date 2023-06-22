@@ -160,17 +160,18 @@ const Index: React.FC<props> = (props) => {
                 />
               </div>
             </Link>
-            <Link
-              type="button"
-              href={"/following"}
-              className="group flex flex-col items-center justify-center px-3 "
-            >
-              <SlUserFollowing
-                size={18}
-                className="text-gray-500 group-hover:text-blue-600"
-              />
-            </Link>
+
             <Auth>
+              <Link
+                type="button"
+                href={"/following"}
+                className="group flex flex-col items-center justify-center px-3 "
+              >
+                <SlUserFollowing
+                  size={18}
+                  className="text-gray-500 group-hover:text-blue-600"
+                />
+              </Link>
               <Link
                 type="button"
                 className="group flex flex-col items-center justify-center px-3"
