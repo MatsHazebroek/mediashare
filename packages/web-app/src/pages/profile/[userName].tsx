@@ -94,7 +94,7 @@ const PageContent: NextPage = () => {
                           className="text-blue-500 hover:underline"
                           target="_blank"
                         >
-                          {new URL(users.data?.link).hostname}
+                          {new URL(users.data?.link).href.slice(8)}
                         </Link>
                       </div>
                     )}
