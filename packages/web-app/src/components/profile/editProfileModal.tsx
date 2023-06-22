@@ -53,6 +53,7 @@ const EditProfileModal = (props: props) => {
       setOpen(false);
       if (props.user.username !== data.username && data.username)
         await router.push(`/profile/${data.username}`);
+      router.reload();
     },
     onError: (error) => {
       toast.error(error.message, {
