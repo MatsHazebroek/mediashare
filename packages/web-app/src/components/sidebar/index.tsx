@@ -51,9 +51,7 @@ const Index: React.FC<props> = (props) => {
                     <span className="inline-flex h-12 w-12 items-center justify-center text-lg text-gray-400">
                       <SlUserFollowing size={25} className="text-gray-500" />
                     </span>
-                    <span className="text-lg font-medium">
-                      Following tweets
-                    </span>
+                    <span className="text-lg font-medium">Volgend</span>
                   </Link>
                 </li>
               </Auth>

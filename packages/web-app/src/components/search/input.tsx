@@ -51,7 +51,7 @@ export const InputElement = (props: props) => {
         ref={inputRef}
         className="w-full rounded-md border border-gray-300 px-4 py-2"
         type="text"
-        placeholder="Search..."
+        placeholder="Zoeken..."
         defaultValue={searchQuery}
         onClick={() => searchQuery.length > 3 && setShowSuggestions(true)}
         onChange={(e) => setSearchQuery(e.target.value)}
