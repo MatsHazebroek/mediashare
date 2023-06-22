@@ -81,21 +81,35 @@ const PageContent: NextPage = () => {
               <div className="flex items-center">
                 <div className="ml-5 mt-16 min-w-[250px] flex-grow">
                   <div className="text-2xl">{users.data?.username}</div>
-                  <div className="mt-2">
-                    {users.data?.description != null && users.data?.description}
-                  </div>
+                  {users.data?.description == "" ? (
+                    <>
+                      <div className="mt-2">
+                        {users.data?.description != null &&
+                          users.data?.description}
+                      </div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+
                   <div className="flex gap-4">
                     {typeof users.data?.link == "string" && (
                       <div className="flex items-center justify-center">
                         <AiOutlineLink />
 
-                        <Link
-                          href={users.data?.link}
-                          className="text-blue-500 hover:underline"
-                          target="_blank"
-                        >
-                          {new URL(users.data?.link).hostname}
-                        </Link>
+                        {users.data.link == "" ? (
+                          <>
+                            <Link
+                              href={users.data?.link}
+                              className="text-blue-500 hover:underline"
+                              target="_blank"
+                            >
+                              {new URL(users.data?.link).hostname}
+                            </Link>
+                          </>
+                        ) : (
+                          <></>
+                        )}
                       </div>
                     )}
                     {users.data?.createdAt != null && (

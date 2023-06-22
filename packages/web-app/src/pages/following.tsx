@@ -1,8 +1,21 @@
 import { type NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
-import Auth from "~/components/auth";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { Posts } from "~/components/posts";
 const PageContent: NextPage = () => {
+  const { status } = useSession();
+  const router = useRouter();
+  useEffect(() => {
+    const toHome = async () => {
+      await router.replace("/");
+    };
+    if (status == "unauthenticated")
+      toHome().catch(() => {
+        return;
+      });
+  }, [status]);
   return (
     <>
       <Head>
@@ -12,9 +25,6 @@ const PageContent: NextPage = () => {
       </Head>
       <main>
         <div className="m-2 bg-white p-4 shadow-md">
-          <Auth>
-            <div className="mt-4 border-t border-gray-200 pt-4"></div>
-          </Auth>
           <div>
             <Posts yourFollwing={true} />
           </div>

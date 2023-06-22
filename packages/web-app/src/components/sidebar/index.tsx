@@ -13,12 +13,14 @@ import {
   RiLogoutCircleLine,
 } from "react-icons/ri";
 import { SlUserFollowing } from "react-icons/sl";
+import { useRouter } from "next/router";
 
 type props = {
   children: ReactNode;
 };
 const Index: React.FC<props> = (props) => {
   const { status, data: session } = useSession();
+  const router = useRouter();
   return (
     <>
       <div className="flex bg-gray-100">
@@ -219,7 +221,10 @@ const Index: React.FC<props> = (props) => {
                     className="text-sm text-gray-500 group-hover:text-blue-600"
                     onClick={() => {
                       void (async () => {
-                        await signOut().catch(() => {
+                        await signOut({
+                          redirect: true,
+                          callbackUrl: "/",
+                        }).catch(() => {
                           return;
                         });
                       })();
