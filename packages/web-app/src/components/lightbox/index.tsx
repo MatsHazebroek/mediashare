@@ -29,8 +29,7 @@ export const Lightbox = (props: props) => {
             </Dialog.Close>
           </div>
         </Dialog.Overlay>
-        <Dialog.Overlay className="fixed inset-0 z-10 bg-blackA9 data-[state=open]:animate-overlayShow" />
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-blackA9 data-[state=open]:animate-overlayShow" />
+        <Dialog.Overlay className="fixed inset-0 z-20 bg-blackA9 data-[state=open]:animate-overlayShow" />
         <Dialog.Content className="fixed left-0 top-0 z-30 h-full w-full max-w-full  p-5 focus:outline-none data-[state=open]:animate-contentShow sm:left-[50%] sm:top-[50%] sm:max-h-[75vh] sm:w-[100vw] sm:max-w-[550px] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:p-[25px]">
           <div className="relative h-full ">
             <Image
