@@ -6,11 +6,12 @@ import { TbCameraPlus } from "react-icons/tb";
 import { UploadButton } from "@uploadthing/react";
 import type { OurFileRouter } from "~/server/uploadthing";
 import toast from "react-hot-toast";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDebouncedState } from "@mantine/hooks";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { set } from "zod";
 
 type props = {
   user: {
@@ -43,18 +44,45 @@ const EditProfileModal = (props: props) => {
     props.user.link,
     500
   );
+  // image upload
   const startUserImageUpload = useRef<(() => void) | null>(null);
+  const [userFiles, setUserFiles] = useState(0); // how many files are currently being uploaded
   const startBannerImageUpload = useRef<(() => void) | null>(null);
-  const updateProfile = api.profile.update.useMutation({
-    onSuccess: async (data) => {
+  const [bannerFiles, setBannerFiles] = useState(0); // how many files are currently being uploaded
+  // has the profile edit started
+  const [started, setStarted] = useState(false);
+  const [actions, setActions] = useState(0);
+  // new user info
+  const [newUserInfo, setNewUserInfo] = useState<{
+    username: string | null;
+    description: string | null;
+    link: string | null;
+  } | null>(null);
+  useEffect(() => {
+    // finish the profile edit
+    const finish = async () => {
       toast.success("Successfully edited profile", {
         id: "updateProfile",
         duration: 2000,
       });
-      setOpen(false);
-      if (props.user.username !== data.username && data.username)
-        await router.push(`/profile/${data.username}`);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setStarted(false);
+      if (newUserInfo?.username !== props.user.username) return router.reload();
       router.reload();
+    };
+    // if there are actions and the profile edit has not started, start it
+    if (actions > 0 && !started) setStarted(true);
+    // if there are no actions and the profile edit has started, finish it
+    if (actions == 0 && started)
+      finish().catch(() => {
+        return;
+      });
+  }, [actions]);
+  const updateProfile = api.profile.update.useMutation({
+    onSuccess: (data) => {
+      setOpen(false);
+      setActions((action) => action - 1);
+      setNewUserInfo(data);
     },
     onError: (error) => {
       toast.error(error.message, {
@@ -74,25 +102,28 @@ const EditProfileModal = (props: props) => {
       props.user.description !== description ||
       props.user.link !== link
     )
-      updateProfile.mutate({
-        user: session?.user.id !== props.user.id ? props.user.id : undefined,
-        username:
-          username && props.user.username !== username ? username : undefined,
-        description:
-          description == ""
-            ? null
-            : description && props.user.description !== description
-            ? description
-            : undefined,
-        link:
-          link == ""
-            ? null
-            : link && link !== props.user.link
-            ? link
-            : undefined,
-      });
-    if (startBannerImageUpload.current) startBannerImageUpload.current();
-    if (startUserImageUpload.current) startUserImageUpload.current();
+      setActions((action) => action + 1);
+    updateProfile.mutate({
+      user: session?.user.id !== props.user.id ? props.user.id : undefined,
+      username:
+        username && props.user.username !== username ? username : undefined,
+      description:
+        description == ""
+          ? null
+          : description && props.user.description !== description
+          ? description
+          : undefined,
+      link:
+        link == "" ? null : link && link !== props.user.link ? link : undefined,
+    });
+    if (startBannerImageUpload.current && bannerFiles > 0) {
+      setActions((action) => action + 1);
+      startBannerImageUpload.current();
+    }
+    if (startUserImageUpload.current && userFiles > 0) {
+      setActions((action) => action + 1);
+      startUserImageUpload.current();
+    }
   };
   return (
     <Dialog.Root open={open} onOpenChange={() => setOpen(!open)}>
@@ -118,7 +149,9 @@ const EditProfileModal = (props: props) => {
                     id: "bannerUploader",
                     duration: 2000,
                   });
+                  setActions((action) => action - 1);
                 }}
+                files={(number) => setBannerFiles(number)}
                 onUploadError={(error: Error) => {
                   // Do something with the error.
                   toast.error("Error editing banner: " + error.message, {
@@ -157,7 +190,9 @@ const EditProfileModal = (props: props) => {
                     id: "userImageUploader",
                     duration: 2000,
                   });
+                  setActions((action) => action - 1);
                 }}
+                files={(files) => setUserFiles(files)}
                 onUploadError={(error: Error) => {
                   // Do something with the error.
                   toast.error(
