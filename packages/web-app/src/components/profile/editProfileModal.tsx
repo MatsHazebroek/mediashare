@@ -26,6 +26,7 @@ type props = {
     username: string | null;
     link: string | null;
     description: string | null;
+    banner: string | null;
   };
 };
 
@@ -131,17 +132,19 @@ const EditProfileModal = (props: props) => {
               >
                 {() => (
                   <label className="cursor-pointer ">
-                    <Image
-                      src={
-                        "https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg?auto=compress&cs=tinysrgb&w=1600"
-                      }
-                      alt="Banner"
-                      className="h-40 w-full rounded object-cover "
-                      width={100}
-                      height={100}
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-800 opacity-30">
-                      <TbCameraPlus className="h-6 w-6 rounded-full text-white" />
+                    <div className="relative flex h-40 max-h-[432px] items-start justify-center bg-slate-600">
+                      {typeof props.user.banner == "string" && (
+                        <Image
+                          src={props.user.banner}
+                          alt={"Image"}
+                          width={1546}
+                          height={432}
+                          className={"max-h-full object-cover "}
+                        />
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-800 opacity-30">
+                        <TbCameraPlus className="h-6 w-6 rounded-full text-white" />
+                      </div>
                     </div>
                   </label>
                 )}
