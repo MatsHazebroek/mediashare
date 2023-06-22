@@ -1,4 +1,4 @@
-function noPosts() {
+export function NoPosts() {
   return (
     <>
       <div className="flex items-center justify-center">
@@ -9,5 +9,3 @@ function noPosts() {
     </>
   );
 }
-
-export default noPosts;

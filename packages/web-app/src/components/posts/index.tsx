@@ -6,6 +6,7 @@ import Loading from "../loading";
 import { useAtom } from "jotai";
 import { newPostAtom } from "~/atoms/newPost";
 import { Post } from "./post";
+import { NoPosts } from "./noPosts";
 
 type props = {
   user?: {
@@ -59,7 +60,16 @@ export const Posts = (props: props) => {
   if (posts.isError) return <div>Error: {posts.error.message}</div>;
   // pages to one array
   const _posts = posts.data.pages.flatMap((page) => page.data);
-
+  if (
+    _posts.length == 0 &&
+    newPost.map(
+      (post) =>
+        (post.type == "tweet" && props.mainPostId == undefined) ||
+        (post.type == "comment" &&
+          props.mainPostId == post.post.ReplyingTo?.commentId)
+    ).length == 0
+  )
+    return <NoPosts />;
   return (
     <div className="m-2 bg-white">
       {newPost &&
