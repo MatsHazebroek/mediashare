@@ -147,8 +147,8 @@ export const profileRouter = createTRPCRouter({
       z.object({
         user: z.string().cuid2().optional(),
         username: z.string().min(3).max(50).optional(),
-        description: z.string().max(160).optional(),
-        link: z.string().url().max(50).optional(),
+        description: z.string().max(160).optional().nullable(),
+        link: z.string().url().max(50).optional().nullable(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -188,18 +188,14 @@ export const profileRouter = createTRPCRouter({
           });
         }
       }
-      console.log("kaas ETEN: ", input);
       return await ctx.prisma.user.update({
         where: {
           id: input.user || ctx.session?.user?.id,
         },
         data: {
           username: input.username,
-          description:
-            input.description == "" || input.description == undefined
-              ? null
-              : input.description,
-          link: input.link == "" || input.link == undefined ? null : input.link,
+          description: input.description == "" ? null : input.description,
+          link: input.link == "" ? null : input.link,
         },
         select: {
           username: true,
