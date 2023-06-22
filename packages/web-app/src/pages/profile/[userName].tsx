@@ -97,14 +97,14 @@ const PageContent: NextPage = () => {
                       <div className="flex items-center justify-center">
                         <AiOutlineLink />
 
-                        {users.data.link == "" ? (
+                        {users.data.link != "" ? (
                           <>
                             <Link
                               href={users.data?.link}
                               className="text-blue-500 hover:underline"
                               target="_blank"
                             >
-                              {new URL(users.data?.link).hostname}
+                              {users.data.link.slice(8)}
                             </Link>
                           </>
                         ) : (
