@@ -67,7 +67,8 @@ const EditProfileModal = (props: props) => {
       });
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setStarted(false);
-      if (newUserInfo?.username !== props.user.username) return router.reload();
+      if (newUserInfo && newUserInfo?.username !== props.user.username)
+        return router.replace(`/profile/${newUserInfo.username || ""}`);
       router.reload();
     };
     // if there are actions and the profile edit has not started, start it
