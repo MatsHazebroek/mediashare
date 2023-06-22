@@ -60,7 +60,7 @@ export const Post = (props: props) => {
         </div>
         <p className="mb-2">{props.post.text}</p>
         {typeof props.post.image == "string" ? (
-          <span onClick={(e) => e.preventDefault()} className=" z-10">
+          <span onClick={(e) => e.preventDefault()} className="z-10 w-fit">
             <Lightbox
               imageUrl={props.post.image}
               altText="image"
