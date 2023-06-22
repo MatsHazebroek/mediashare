@@ -40,6 +40,7 @@ export const searchRouter = createTRPCRouter({
                 User: {
                   status: "ACTIVE",
                 },
+                status: "ACTIVE",
                 text: {
                   contains: query.join(" "),
                 },
