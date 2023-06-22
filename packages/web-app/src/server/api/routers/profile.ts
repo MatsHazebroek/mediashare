@@ -195,8 +195,8 @@ export const profileRouter = createTRPCRouter({
         },
         data: {
           username: input.username,
-          description: input.description,
-          link: input.link,
+          description: input.description == undefined ? "" : input.description,
+          link: input.link == undefined ? "" : input.description,
         },
         select: {
           username: true,
