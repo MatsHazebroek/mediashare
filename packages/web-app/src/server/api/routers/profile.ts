@@ -188,15 +188,18 @@ export const profileRouter = createTRPCRouter({
           });
         }
       }
-
+      console.log("kaas ETEN: ", input);
       return await ctx.prisma.user.update({
         where: {
           id: input.user || ctx.session?.user?.id,
         },
         data: {
           username: input.username,
-          description: input.description == undefined ? "" : input.description,
-          link: input.link == undefined ? "" : input.description,
+          description:
+            input.description == "" || input.description == undefined
+              ? null
+              : input.description,
+          link: input.link == "" || input.link == undefined ? null : input.link,
         },
         select: {
           username: true,
